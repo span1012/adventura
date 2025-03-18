@@ -4,6 +4,8 @@ Docker/__pycache__
 
 venv/
 
+env/
+
 4300/
 
 *.pyc

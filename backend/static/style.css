@@ -10,6 +10,7 @@
     justify-content: start;
     align-items: center;
     flex-direction: column;
+    font-family: 'Open Sans', sans-serif;
 }
 
 #google-c{
@@ -49,12 +50,12 @@
 }
 
 .input-box{
-    border-radius: 50px;
+    border-radius: 5px;
     border:1px solid black;
     display: flex;
     align-items: center;
     margin-top: 10px;
-    padding:12px;
+    padding:10px;
     width: 600px;
 }
 
@@ -88,4 +89,83 @@
 
 .episode-desc{
     font-family: 'Montserrat', sans-serif;
+}
+
+/* amanda add */
+
+input, select {
+    width: 80%;
+    /* padding: 8px; */
+}
+
+select {
+    margin-left: 15px; 
+}
+
+#kids {
+    font-size: 14px;
+    /* padding-right:20px; */
+    /* appearance: none; */
+}
+
+.input-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 600px; 
+    /* margin: 10px auto; */
+}
+
+.input-container label {
+    flex: 1;
+    text-align: left;
+}
+
+.input-container select, 
+.input-container input {
+    flex: 2;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.left-align {
+    display: flex;
+    align-items: left;
+    width: 100%;
+    max-width: 600px; 
+    margin: 10px auto;
+}
+
+.left-align label {
+    flex: 1;
+    text-align: left;
+}
+
+.left-align select, 
+.left-align input {
+    flex: 2;
+    /* padding: 10px; */
+    /* border: 1px solid #ccc; */
+    /* border-radius: 5px; */
+    font-size: 16px;
+    width: 100%;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex:2;
+    width: 100%;
+    max-width: 600px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
 }
