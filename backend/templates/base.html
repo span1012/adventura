@@ -1,5 +1,6 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
+
+<title>{% block title %}{% endblock %} 🎢 Adventura 🎡 </title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,9 +27,10 @@
 
     <div class="full-body-container">
         <div class="top-text">
-            <h1>Find Your Perfect Amusement Park With Adventura</h1>
-            <p>Tell us your preferences and we'll recommend the best amusement parks for you</p>
-
+            <h1>Adventura</h1>
+            <h2>Find Your Perfect Amusement Park</h2>
+            <h3>Tell us your preferences and we'll recommend the best amusement parks for you</h3>
+            
             <div class="left-align">
                 <div class="input-box" onclick="sendFocus()">
                     <input placeholder="Describe your ideal amusement park experience" id="filter-text-val" onkeyup="filterText()">

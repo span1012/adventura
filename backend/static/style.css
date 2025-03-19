@@ -1,3 +1,10 @@
+/* Media Query */
+@media (min-width: 1200px) {
+    .grid-container {
+        padding: 10px;
+    }
+}
+
 .full-body-container{
     position: absolute;
     top:0;
@@ -12,6 +19,37 @@
     flex-direction: column;
     font-family: 'Open Sans', sans-serif;
 }
+
+body {
+    background-color: #ddedf4;
+}
+
+/* Text Styling */
+h1, h2 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+h1 {
+    font-size: 50px;
+    text-align: center;
+    font-weight: bold;
+    margin: 10px;
+    padding: 10px;
+    color: #3793bc;
+}
+h2 {
+    font-size: 40px;
+    text-align: left;
+    margin: 20px;
+    padding: 10px;
+    color: #e65667;
+}
+h3 {
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    font-size: 26px;
+}
+
 
 #google-c{
     color:#4285F4;
