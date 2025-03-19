@@ -88,7 +88,7 @@
             document.getElementById('filter-text-val').focus()
         }
 
-        function outputResults() {
+        function filterText() {
             document.getElementById("answer-box").innerHTML = ""
             console.log(document.getElementById("filter-text-val").value)
             fetch("/parks?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())

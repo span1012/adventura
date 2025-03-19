@@ -85,7 +85,7 @@ def json_search(query):
     similarity_scores = find_similar_parks(query_tokens, park_token_dict)
     park_df = pd.DataFrame({"Park Name" : similarity_scores.keys(), 
                                  "Similarity Score" : similarity_scores.values()})
-    return json.dumps(park_df)
+    return park_df.to_json(orient='records')
 
 @app.route("/")
 def home():
