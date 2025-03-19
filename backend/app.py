@@ -58,7 +58,7 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
     """
     scores = {}
     n_query_tokens = len(query_tokens)
-    for park, park_tokens in park_token_dict:
+    for park, park_tokens in park_token_dict.items():
         dot_product = 0
         common_tokens = 0     # variable to store number of tokens in common
                               # between the query and the reviews for this park  
