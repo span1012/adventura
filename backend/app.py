@@ -17,8 +17,14 @@ json_file_path = os.path.join(current_directory, 'yelp.json')
 
 with open(json_file_path, 'r') as file:
     data = json.load(file)
-    parks_df = pd.DataFrame(data['name'])
-    reviews_df = pd.DataFrame(data['reviews'])
+    park_names = []
+    park_reviews = []
+    for entry in data:
+        reviews = []
+        park_names.append(entry['name'])
+        for review in entry['reviews']:
+            reviews.append(review)
+    parks_df = pd.DataFrame({'Park Name' : park_names, 'Reviews' : reviews})
 
 app = Flask(__name__)
 CORS(app)
