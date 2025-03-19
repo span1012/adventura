@@ -2,7 +2,6 @@ import json
 import os
 from flask import Flask, render_template, request
 from flask_cors import CORS
-from networkx import node_clique_number
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 import pandas as pd
 import re
