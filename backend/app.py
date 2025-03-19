@@ -13,12 +13,11 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..",os.curdir))
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Specify the path to the JSON file relative to the current script
-json_file_path = os.path.join(current_directory, 'init.json')
+json_file_path = os.path.join(current_directory, 'yelp.json')
 
-# Assuming your JSON data is stored in a file named 'init.json'
 with open(json_file_path, 'r') as file:
     data = json.load(file)
-    episodes_df = pd.DataFrame(data['episodes'])
+    parks_df = pd.DataFrame(data['name'])
     reviews_df = pd.DataFrame(data['reviews'])
 
 app = Flask(__name__)
@@ -27,9 +26,9 @@ CORS(app)
 # Sample search using json with pandas
 def json_search(query):
     matches = []
-    merged_df = pd.merge(episodes_df, reviews_df, left_on='id', right_on='id', how='inner')
-    matches = merged_df[merged_df['title'].str.lower().str.contains(query.lower())]
-    matches_filtered = matches[['title', 'descr', 'imdb_rating']]
+    merged_df = pd.merge(parks_df, reviews_df, left_on='id', right_on='id', how='inner')
+    matches = merged_df[merged_df['name'].str.lower().str.contains(query.lower())]
+    matches_filtered = matches[['name', 'state']]
     matches_filtered_json = matches_filtered.to_json(orient='records')
     return matches_filtered_json
 
