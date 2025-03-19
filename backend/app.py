@@ -83,8 +83,8 @@ def json_search(query):
             query_tokens[token] += 1
     park_token_dict = aggregate_reviews(park_dict)
     similarity_scores = find_similar_parks(query_tokens, park_token_dict)
-    park_df = pd.DataFrame({"Park Name" : similarity_scores.keys(), 
-                                 "Similarity Score" : similarity_scores.values()})
+    park_df = pd.DataFrame({"name" : similarity_scores.keys(), 
+                                 "score" : similarity_scores.values()})
     return park_df.to_json(orient='records')
 
 @app.route("/")
