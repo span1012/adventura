@@ -4,7 +4,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap"
+    rel="stylesheet">
+
 <body>
     <!-- <div class="full-body-container">
         <div class="top-text">
@@ -30,30 +32,31 @@
             <h1>Adventura</h1>
             <h2>Find Your Perfect Amusement Park</h2>
             <h3>Tell us your preferences and we'll recommend the best amusement parks for you</h3>
-            
+
             <div class="left-align">
                 <div class="input-box" onclick="sendFocus()">
-                    <input placeholder="Describe your ideal amusement park experience" id="filter-text-val" onkeyup="filterText()">
+                    <input placeholder="Describe your ideal amusement park experience" id="filter-text-val"
+                        onkeyup="filterText()">
                 </div>
             </div>
 
             <div class="input-container left-align">
                 <label for="location">Preferred Locations (State):</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" name="location" value="FL"> Florida (FL)</label>
-                        <label><input type="checkbox" name="location" value="PA"> Pennsylvania (PA)</label>
-                        <label><input type="checkbox" name="location" value="TN"> Tennessee (TN)</label>
-                        <label><input type="checkbox" name="location" value="MO"> Missouri (MO)</label>
-                        <label><input type="checkbox" name="location" value="AZ"> Arizona (AZ)</label>
-                        <label><input type="checkbox" name="location" value="IN"> Indiana (IN)</label>
-                        <label><input type="checkbox" name="location" value="NJ"> New Jersey (NJ)</label>
-                        <label><input type="checkbox" name="location" value="NV"> Nevada (NV)</label>
-                        <label><input type="checkbox" name="location" value="LA"> Louisiana (LA)</label>
-                        <label><input type="checkbox" name="location" value="ID"> Idaho (ID)</label>
-                        <label><input type="checkbox" name="location" value="IL"> Illinois (IL)</label>
-                        <label><input type="checkbox" name="location" value="DE"> Delaware (DE)</label>
-                        <label><input type="checkbox" name="location" value="CA"> California (CA)</label>
-                    </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="location" value="FL"> Florida (FL)</label>
+                    <label><input type="checkbox" name="location" value="PA"> Pennsylvania (PA)</label>
+                    <label><input type="checkbox" name="location" value="TN"> Tennessee (TN)</label>
+                    <label><input type="checkbox" name="location" value="MO"> Missouri (MO)</label>
+                    <label><input type="checkbox" name="location" value="AZ"> Arizona (AZ)</label>
+                    <label><input type="checkbox" name="location" value="IN"> Indiana (IN)</label>
+                    <label><input type="checkbox" name="location" value="NJ"> New Jersey (NJ)</label>
+                    <label><input type="checkbox" name="location" value="NV"> Nevada (NV)</label>
+                    <label><input type="checkbox" name="location" value="LA"> Louisiana (LA)</label>
+                    <label><input type="checkbox" name="location" value="ID"> Idaho (ID)</label>
+                    <label><input type="checkbox" name="location" value="IL"> Illinois (IL)</label>
+                    <label><input type="checkbox" name="location" value="DE"> Delaware (DE)</label>
+                    <label><input type="checkbox" name="location" value="CA"> California (CA)</label>
+                </div>
             </div>
 
             <div class="input-container left-align">
@@ -73,7 +76,7 @@
 
     <script>
 
-        function answerBoxTemplate(title,titleDesc,rating){
+        function answerBoxTemplate(title, titleDesc, rating) {
             return `<div class=''>
                 <h3 class='episode-title'>${title}</h3>
                 <p class='episode-desc'>${titleDesc}</p>
@@ -81,24 +84,24 @@
             </div>`
         }
 
-        function sendFocus(){
+        function sendFocus() {
             document.getElementById('filter-text-val').focus()
         }
 
-        function filterText(){
+        function outputResults() {
             document.getElementById("answer-box").innerHTML = ""
             console.log(document.getElementById("filter-text-val").value)
-            fetch("/episodes?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
-            .then((response) => response.json())
-            .then((data) => data.forEach(row => {
+            fetch("/parks?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
+                .then((response) => response.json())
+                .then((data) => data.forEach(row => {
 
-                let tempDiv = document.createElement("div")
-                tempDiv.innerHTML = answerBoxTemplate(row.title,row.descr,row.imdb_rating)
-                document.getElementById("answer-box").appendChild(tempDiv)
-            }));
+                    let tempDiv = document.createElement("div")
+                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.descr, row.imdb_rating)
+                    document.getElementById("answer-box").appendChild(tempDiv)
+                }));
         }
 
-        function getSelectedStates(){
+        function getSelectedStates() {
             let selectedStates = []
 
             let checkboxes = document.querySelectorAll('input[name="location"]:checked')
@@ -111,7 +114,7 @@
             // selectedStates gives you a list of states
         }
 
-        function getHasKids(){
+        function getHasKids() {
             let kidsSelect = document.getElementById("kids")
             let selectedValue = kidsSelect.value
 

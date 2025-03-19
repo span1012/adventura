@@ -82,14 +82,16 @@ def json_search(query):
         else:
             query_tokens[token] += 1
     park_token_dict = aggregate_reviews(park_dict)
-    similar_parks = find_similar_parks(query_tokens, park_token_dict)
-    return json.dumps(similar_parks)
+    similarity_scores = find_similar_parks(query_tokens, park_token_dict)
+    park_df = pd.DataFrame({"Park Name" : similarity_scores.keys(), 
+                                 "Similarity Score" : similarity_scores.values()})
+    return json.dumps(park_df)
 
 @app.route("/")
 def home():
     return render_template('base.html',title="sample html")
 
-@app.route("/episodes")
+@app.route("/parks")
 def episodes_search():
     text = request.args.get("title")
     return json_search(text)
