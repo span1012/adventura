@@ -69,8 +69,7 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
     """
     Function to create and return a dictionary that maps amusement park names to 
     the cosine similarity scores between their associated tokenized reviews and
-    the input tokenized query. Returns the dictionary sorted in descending
-    cosine similarity score order.
+    the input tokenized query.
     """
     scores = {}
     n_query_tokens = len(query_tokens)
@@ -84,9 +83,6 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
                 common_tokens += 1
         total_tokens = n_query_tokens + len(park_tokens) - common_tokens
         scores[park] = dot_product / total_tokens
-    scores = {park : score for park, score in sorted(scores.items(), 
-                                                     key=lambda x:x[1], 
-                                                     reverse=True)}
     return scores
 
 # Sample search using json with pandas
@@ -100,9 +96,10 @@ def json_search(query):
     park_token_dict = aggregate_reviews(park_dict)
     similarity_scores = find_similar_parks(query_tokens, park_token_dict)
     average_park_ratings = calculate_average_ratings(park_dict)
-    park_df = pd.DataFrame({"name" : list(similarity_scores.keys()), 
-                            "rating" : average_park_ratings,
-                                 "score" : list(similarity_scores.values())})
+    park_df = pd.DataFrame({"name" : similarity_scores.keys(),
+                            "rating" : average_park_ratings.values(),
+                            "score" : similarity_scores.values()})
+    park_df = park_df.sort_values(by='score', ascending=False)
     return park_df.to_json(orient='records')
 
 @app.route("/")
