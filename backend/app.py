@@ -74,11 +74,15 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
     scores = {}
     n_query_tokens = len(query_tokens)
     for park, park_tokens in park_token_dict.items():
-        dot_product = 0  
+        dot_product = 0
+        common_tokens = 0     # variable to store number of tokens in common
+                              # between the query and the reviews for this park  
         for token in query_tokens:
             if park_tokens.get(token) is not None:
                 dot_product += park_tokens.get(token) * query_tokens.get(token)
-        scores[park] = dot_product / (n_query_tokens ** 2 * len(park_tokens) ** 2)
+                common_tokens += 1
+        total_tokens = n_query_tokens + len(park_tokens) - common_tokens
+        scores[park] = common_tokens / total_tokens
     return scores
 
 # Sample search using json with pandas
@@ -95,7 +99,7 @@ def json_search(query):
     park_df = pd.DataFrame({"name" : similarity_scores.keys(),
                             "rating" : average_park_ratings.values(),
                             "score" : similarity_scores.values()})
-    park_df = park_df.sort_values(by='score', ascending=False)
+    park_df = park_df.sort_values(by='score', )
     return park_df.to_json(orient='records')
 
 @app.route("/")
