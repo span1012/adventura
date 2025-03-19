@@ -83,7 +83,7 @@ def json_search(query):
             query_tokens[token] += 1
     park_token_dict = aggregate_reviews(park_dict)
     similar_parks = find_similar_parks(query_tokens, park_token_dict)
-    return similar_parks.to_json(orient='records')
+    return json.dumps(similar_parks)
 
 @app.route("/")
 def home():
