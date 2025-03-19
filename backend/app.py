@@ -102,7 +102,7 @@ def json_search(query):
     average_park_ratings = calculate_average_ratings(park_dict)
     park_df = pd.DataFrame({"name" : similarity_scores.keys(), 
                             "rating" : average_park_ratings,
-                            "score" : similarity_scores.values()})
+                                 "score" : similarity_scores.values()})
     return park_df.to_json(orient='records')
 
 @app.route("/")
