@@ -2,6 +2,7 @@ import json
 import os
 from flask import Flask, render_template, request
 from flask_cors import CORS
+from networkx import node_clique_number
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 import pandas as pd
 import re
@@ -74,15 +75,11 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
     scores = {}
     n_query_tokens = len(query_tokens)
     for park, park_tokens in park_token_dict.items():
-        dot_product = 0
-        common_tokens = 0     # variable to store number of tokens in common
-                              # between the query and the reviews for this park  
+        dot_product = 0  
         for token in query_tokens:
             if park_tokens.get(token) is not None:
                 dot_product += park_tokens.get(token) * query_tokens.get(token)
-                common_tokens += 1
-        total_tokens = n_query_tokens + len(park_tokens) - common_tokens
-        scores[park] = dot_product / total_tokens
+        scores[park] = dot_product / (n_query_tokens ** 2 * len(park_tokens) ** 2)
     return scores
 
 # Sample search using json with pandas
