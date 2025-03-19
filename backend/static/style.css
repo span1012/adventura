@@ -32,8 +32,8 @@ h1 {
     font-size: 50px;
     text-align: center;
     font-weight: bold;
-    margin: 20px;
-    padding: 20px;
+    margin: 10px;
+    padding: 10px;
     color: #3793bc;
 }
 h2 {
@@ -42,6 +42,12 @@ h2 {
     margin: 20px;
     padding: 10px;
     color: #e65667;
+}
+h3 {
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    font-size: 26px;
 }
 
 
