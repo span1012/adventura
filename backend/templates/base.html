@@ -28,13 +28,13 @@
         <div class="top-text">
             <h1>Find Your Perfect Amusement Park With Adventura</h1>
             <p>Tell us your preferences and we'll recommend the best amusement parks for you</p>
-            
+
             <div class="left-align">
                 <div class="input-box" onclick="sendFocus()">
                     <input placeholder="Describe your ideal amusement park experience" id="filter-text-val" onkeyup="filterText()">
                 </div>
             </div>
-            
+
             <div class="input-container left-align">
                 <label for="location">Preferred Locations (State):</label>
                     <div class="checkbox-group">
@@ -63,7 +63,7 @@
                 </select>
             </div>
 
-            <!-- <button onclick="fetchRecommendations()">Find Parks</button> -->
+            <button onclick="getHasKids()">Find Parks</button>
         </div>
 
         <div id="answer-box"></div>
@@ -89,13 +89,33 @@
             fetch("/episodes?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
             .then((response) => response.json())
             .then((data) => data.forEach(row => {
-                
+
                 let tempDiv = document.createElement("div")
                 tempDiv.innerHTML = answerBoxTemplate(row.title,row.descr,row.imdb_rating)
                 document.getElementById("answer-box").appendChild(tempDiv)
             }));
-
         }
-            
+
+        function getSelectedStates(){
+            let selectedStates = []
+
+            let checkboxes = document.querySelectorAll('input[name="location"]:checked')
+
+            checkboxes.forEach((checkbox) => {
+                selectedStates.push(checkbox.value)
+            })
+
+            console.log("Selected states:", selectedStates)
+            // selectedStates gives you a list of states
+        }
+
+        function getHasKids(){
+            let kidsSelect = document.getElementById("kids")
+            let selectedValue = kidsSelect.value
+
+            console.log("Has kids?:", selectedValue)
+            // selectedValue is either "yes", "no", or "doesn't matter"
+        }
+
     </script>
 </body>
