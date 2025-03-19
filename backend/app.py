@@ -40,7 +40,7 @@ def aggregate_reviews(park_dict) -> dict[str, dict[str, int]]:
     for park, reviews in park_dict.items():
         token_dict = {}
         for review in reviews:
-            tokens = tokenize(review)
+            tokens = tokenize(review['text'])
             for token in tokens:
                 if token_dict.get(token) is None:
                     token_dict[token] = 1
