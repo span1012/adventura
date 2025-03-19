@@ -99,7 +99,7 @@ def json_search(query):
     park_df = pd.DataFrame({"name" : similarity_scores.keys(),
                             "rating" : average_park_ratings.values(),
                             "score" : similarity_scores.values()})
-    park_df = park_df.sort_values(by='score', )
+    park_df = park_df.sort_values(by='score', ascending=False)
     return park_df.to_json(orient='records')
 
 @app.route("/")
