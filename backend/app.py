@@ -49,6 +49,22 @@ def aggregate_reviews(park_dict) -> dict[str, dict[str, int]]:
         park_token_dict[park] = token_dict
     return park_token_dict
 
+def calculate_average_ratings(park_dict) -> dict[str, int]:
+    """
+    Function to calculate each distinct park's average rating, out of five stars,
+    across all of its associated reviews. Returns a dictionary mapping park 
+    names to their average ratings.
+    """
+    rating_dict = {}
+    for park, reviews in park_dict.items():
+        rating_sum = 0
+        review_count = 0
+        for review in reviews:
+            rating_sum += review['stars']
+            review_count += 1
+        rating_dict[park] = rating_sum / review_count
+    return rating_dict
+
 def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
     """
     Function to create and return a dictionary that maps amusement park names to 
@@ -83,8 +99,10 @@ def json_search(query):
             query_tokens[token] += 1
     park_token_dict = aggregate_reviews(park_dict)
     similarity_scores = find_similar_parks(query_tokens, park_token_dict)
+    average_park_ratings = calculate_average_ratings(park_dict)
     park_df = pd.DataFrame({"name" : similarity_scores.keys(), 
-                                 "score" : similarity_scores.values()})
+                            "rating" : average_park_ratings,
+                            "score" : similarity_scores.values()})
     return park_df.to_json(orient='records')
 
 @app.route("/")

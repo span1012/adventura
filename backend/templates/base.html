@@ -76,10 +76,11 @@
 
     <script>
 
-        function answerBoxTemplate(name, score) {
+        function answerBoxTemplate(name, rating, score) {
             return `<div class=''>
                 <h3 class='park-name'>${name}</h3>
-                <p class='park-rating'>${score}</p>
+                <p class='park-rating'>${rating}</p>
+                <p class='park-score'>${score}</p>
             </div>`
         }
 
@@ -95,7 +96,7 @@
                 .then((data) => data.forEach(row => {
 
                     let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.score)
+                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.rating, row.score)
                     document.getElementById("answer-box").appendChild(tempDiv)
                 }));
         }
