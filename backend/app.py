@@ -82,7 +82,7 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
                 dot_product += park_tokens.get(token) * query_tokens.get(token)
                 common_tokens += 1
         total_tokens = n_query_tokens + len(park_tokens) - common_tokens
-        scores[park] = dot_product / total_tokens
+        scores[park] = (dot_product / total_tokens) * 100
     return scores
 
 # Sample search using json with pandas
