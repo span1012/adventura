@@ -90,6 +90,7 @@ h3 {
 .input-box{
     border-radius: 5px;
     border:1px solid black;
+    background-color: white;
     display: flex;
     align-items: center;
     margin-top: 10px;
@@ -114,6 +115,7 @@ h3 {
     font-size: 16px;
     border: none;
     outline: 0;
+    /* background-color: white; */
 }
 
 #answer-box{
