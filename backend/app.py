@@ -83,7 +83,7 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
                 if inverted_dict.get(token) is None:
                     inverted_dict[token] = [(park, 1)]
                 else:
-                    last_pair = inverted_dict[token][len(inverted_dict[token] - 1)]
+                    last_pair = inverted_dict[token][len(inverted_dict[token]) - 1]
                     # check if the token has already been found in a review for
                     # this park
                     if last_pair[0] == park:
