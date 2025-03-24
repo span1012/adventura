@@ -55,33 +55,33 @@ def get_idf_values(parks, num_docs) -> dict[str, int]:
     one park review to the total number of reviews in which the term appears
     across the entirety of yelp.json.
     """
-    df_dict = {}
+    idf_dict = {}
     for attributes in parks.values():
         for review in attributes['reviews']:
             tokens = set(tokenize(review['text']))
             for token in tokens:
-                token = token.lower()
-                if df_dict.get(token) is None:
-                    df_dict[token] = 1
+                # token = token.lower()
+                if idf_dict.get(token) is None:
+                    idf_dict[token] = 1
                 else:
-                    df_dict[token] += 1
-    for token, count in df_dict.items():
-        df_dict[token] = num_docs / count
-    return df_dict
+                    idf_dict[token] += 1
+    for token, count in idf_dict.items():
+        idf_dict[token] = num_docs / count
+    return idf_dict
 
 def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
     """
     Function to create an inverted index dictionary for all unique terms across
     the entire set of amusement park reviews. The dictionary maps each unique
-    term to a list of tuples, where the first value in the tuple is a park name,
-    and the second value represents the number of times that the token appears
-    in a review for that park.
+    term to a list of tuples, where the first value in the tuple is a park
+    business ID, and the second value represents the number of times that the
+    token appears in a review for that park.
     """
     inverted_dict = {}
     for park, attributes in parks.items():
         for review in attributes['reviews']:
             for token in review:
-                token = token.lower()
+                # token = token.lower()
                 if inverted_dict.get(token) is None:
                     inverted_dict[token] = [(park, 1)]
                 else:
@@ -168,7 +168,7 @@ def apply_filters(parks, locations=None, good_for_kids=None):
 def json_search(query, locations=None, good_for_kids=None):
     query_tokens = {}
     for token in tokenize(query):
-        token = token.lower()
+        # token = token.lower()
         if query_tokens.get(token) is None:
             query_tokens[token] = 1
         else:
@@ -180,7 +180,8 @@ def json_search(query, locations=None, good_for_kids=None):
     similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
-    # create a dataframe to store the parks and location and rating information
+    # create a dataframe to store the parks and their associated locations,
+    # average ratings, and similarity scores with the user query
     park_df = pd.DataFrame(columns=['name', 'location', 'score', 'rating'])
     for park, score in similarity_scores.items():
         new_row = pd.DataFrame({'name': park_dict_filtered[park]['name'],
