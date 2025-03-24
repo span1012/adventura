@@ -195,12 +195,12 @@ def json_search(query, locations=None, good_for_kids=None):
         else:
             query_tokens[token] += 1
     park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
-    # inverted_dict = build_inverted_index(park_dict_filtered)
+    inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
-    park_token_dict = aggregate_reviews(park_dict_filtered)
-    # similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
-    similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
+    # park_token_dict = aggregate_reviews(park_dict_filtered)
+    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
+    # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
     # create a dataframe to store the parks and their associated locations,
