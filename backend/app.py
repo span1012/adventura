@@ -77,7 +77,7 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
     in a review for that park.
     """
     inverted_dict = {}
-    for park, attributes in parks.values():
+    for park, attributes in parks.items():
         for review in attributes['reviews']:
             for token in review:
                 if inverted_dict.get(token) is None:
