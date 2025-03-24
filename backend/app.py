@@ -136,14 +136,15 @@ def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, i
     """
     scores = {}
     for token, frequency in query_tokens.items():
-        for park, count in inverted_dict[token]:
-            # initialize or update score accumulator
-            if scores.get(park) is None:
-                scores[park] = frequency * idf_dict[token] \
-                                * count * idf_dict[token]
-            else:
-                scores[park] += frequency * idf_dict[token] \
-                                * count * idf_dict[token]
+        if idf_dict.get(token) is not None:
+            for park, count in inverted_dict[token]:
+                # initialize or update score accumulator
+                if scores.get(park) is None:
+                    scores[park] = frequency * idf_dict[token] \
+                                    * count * idf_dict[token]
+                else:
+                    scores[park] += frequency * idf_dict[token] \
+                                    * count * idf_dict[token]
     return scores
 
 def apply_filters(parks, locations=None, good_for_kids=None):
