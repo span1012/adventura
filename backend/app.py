@@ -60,6 +60,7 @@ def get_idf_values(parks, num_docs) -> dict[str, int]:
         for review in attributes['reviews']:
             tokens = set(tokenize(review['text']))
             for token in tokens:
+                token = token.lower()
                 if df_dict.get(token) is None:
                     df_dict[token] = 1
                 else:
@@ -80,6 +81,7 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
     for park, attributes in parks.items():
         for review in attributes['reviews']:
             for token in review:
+                token = token.lower()
                 if inverted_dict.get(token) is None:
                     inverted_dict[token] = [(park, 1)]
                 else:
@@ -136,7 +138,7 @@ def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, i
     """
     scores = {}
     for token, frequency in query_tokens.items():
-        if idf_dict.get(token) is not None:
+        if inverted_dict.get(token) is not None and idf_dict.get(token) is not None:
             for park, count in inverted_dict[token]:
                 # initialize or update score accumulator
                 if scores.get(park) is None:
@@ -166,6 +168,7 @@ def apply_filters(parks, locations=None, good_for_kids=None):
 def json_search(query, locations=None, good_for_kids=None):
     query_tokens = {}
     for token in tokenize(query):
+        token = token.lower()
         if query_tokens.get(token) is None:
             query_tokens[token] = 1
         else:
