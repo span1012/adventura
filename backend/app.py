@@ -39,28 +39,65 @@ def tokenize(text):
     """
     return re.findall(r'[a-z]+', text.lower())
 
-def get_idf_values(parks) -> dict[str, int]:
+def num_docs(parks) -> int:
+    """
+    Function to determine the total number of amusement park reviews contained
+    in yelp.json.
+    """
+    sum = 0
+    for attributes in parks.values():
+        sum += len(attributes['reviews'])
+    return sum
+
+def get_idf_values(parks, num_docs) -> dict[str, int]:
     """
     Function to create a dictionary mapping every term that appears in at least
     one park review to the total number of reviews in which the term appears
     across the entirety of yelp.json.
     """
-    idf_dict = {}
-    for park, attributes in parks.items():
+    df_dict = {}
+    for attributes in parks.values():
         for review in attributes['reviews']:
             tokens = set(tokenize(review['text']))
             for token in tokens:
-                if idf_dict.get(token) is None:
-                    idf_dict[token] = 1
+                if df_dict.get(token) is None:
+                    df_dict[token] = 1
                 else:
-                    idf_dict[token] += 1
-    return idf_dict
+                    df_dict[token] += 1
+    for token, count in df_dict.items():
+        df_dict[token] = num_docs / count
+    return df_dict
+
+def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
+    """
+    Function to create an inverted index dictionary for all unique terms across
+    the entire set of amusement park reviews. The dictionary maps each unique
+    term to a list of tuples, where the first value in the tuple is a park name,
+    and the second value represents the number of times that the token appears
+    in a review for that park.
+    """
+    inverted_dict = {}
+    for park, attributes in parks.values():
+        for review in attributes['reviews']:
+            for token in review:
+                if inverted_dict.get(token) is None:
+                    inverted_dict[token] = [(park, 1)]
+                else:
+                    last_pair = inverted_dict[token][len(inverted_dict[token] - 1)]
+                    # check if the token has already been found in a review for
+                    # this park
+                    if last_pair[0] == park:
+                        inverted_dict[token][len(inverted_dict) - 1] = \
+                                                (last_pair[0], last_pair[1] + 1)
+                    else:
+                        inverted_dict[token].append((park, 1))
+    return inverted_dict
 
 def aggregate_reviews(parks, idf_dict) -> dict[str, dict[str, int]]:
     """
     Function to create, for each distinct amusement park in the input dictionary,
     a dictionary mapping terms that appear in that park's reviews to their 
-    associated TF-IDF values.
+    associated frequency values.
     """
     park_token_dict = {}
     for park, attributes in parks.items():
@@ -72,8 +109,6 @@ def aggregate_reviews(parks, idf_dict) -> dict[str, dict[str, int]]:
                     token_dict[token] = 1
                 else:
                     token_dict[token] += 1
-        for token in token_dict:       # weigh TF values according to IDF values
-            token_dict[token] *= idf_dict[token]
         park_token_dict[park] = token_dict
     return park_token_dict
 
@@ -93,24 +128,22 @@ def calculate_average_ratings(parks) -> dict[str, int]:
         rating_dict[park] = rating_sum / review_count
     return rating_dict
 
-def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
+def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, int]:
     """
     Function to create and return a dictionary that maps business ids to 
     the cosine similarity scores between their associated tokenized reviews and
     the input tokenized query.
     """
     scores = {}
-    n_query_tokens = len(query_tokens)
-    for park, park_tokens in park_token_dict.items():
-        dot_product = 0
-        common_tokens = 0     # variable to store number of tokens in common
-                              # between the query and the reviews for this park  
-        for token in query_tokens:
-            if park_tokens.get(token) is not None:
-                dot_product += park_tokens.get(token) * query_tokens.get(token)
-                common_tokens += 1
-        total_tokens = n_query_tokens + len(park_tokens) - common_tokens
-        scores[park] = (dot_product / total_tokens)
+    for token, frequency in query_tokens:
+        for park, count in inverted_dict[token]:
+            # initialize or update score accumulator
+            if scores.get(park) is None:
+                scores[park] = frequency * idf_dict[token] \
+                                * count * idf_dict[token]
+            else:
+                scores[park] += frequency * idf_dict[token] \
+                                * count * idf_dict[token]
     return scores
 
 def apply_filters(parks, locations=None, good_for_kids=None):
@@ -137,9 +170,10 @@ def json_search(query, locations=None, good_for_kids=None):
         else:
             query_tokens[token] += 1
     park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
-    idf_dict = get_idf_values(park_dict_filtered)
-    park_token_dict = aggregate_reviews(park_dict_filtered, idf_dict)
-    similarity_scores = find_similar_parks(query_tokens, park_token_dict)
+    inverted_dict = build_inverted_index(park_dict_filtered)
+    n_docs = num_docs(park_dict_filtered)
+    idf_dict = get_idf_values(park_dict_filtered, n_docs)
+    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
     # create a dataframe to store the parks and location and rating information
