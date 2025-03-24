@@ -39,10 +39,28 @@ def tokenize(text):
     """
     return re.findall(r'[a-z]+', text.lower())
 
-def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
+def get_idf_values(parks) -> dict[str, int]:
     """
-    Function to create aggregated term frequency dictionaries for the reviews
-    associated with each distinct amusement park in `reviews_df`.
+    Function to create a dictionary mapping every term that appears in at least
+    one park review to the total number of reviews in which the term appears
+    across the entirety of yelp.json.
+    """
+    idf_dict = {}
+    for park, attributes in parks.items():
+        for review in attributes['reviews']:
+            tokens = set(tokenize(review['text']))
+            for token in tokens:
+                if idf_dict.get(token) is None:
+                    idf_dict[token] = 1
+                else:
+                    idf_dict[token] += 1
+    return idf_dict
+
+def aggregate_reviews(parks, idf_dict) -> dict[str, dict[str, int]]:
+    """
+    Function to create, for each distinct amusement park in the input dictionary,
+    a dictionary mapping terms that appear in that park's reviews to their 
+    associated TF-IDF values.
     """
     park_token_dict = {}
     for park, attributes in parks.items():
@@ -54,6 +72,8 @@ def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
                     token_dict[token] = 1
                 else:
                     token_dict[token] += 1
+        for token in token_dict:       # weigh TF values according to IDF values
+            token_dict[token] *= idf_dict[token]
         park_token_dict[park] = token_dict
     return park_token_dict
 
@@ -117,7 +137,8 @@ def json_search(query, locations=None, good_for_kids=None):
         else:
             query_tokens[token] += 1
     park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
-    park_token_dict = aggregate_reviews(park_dict_filtered)
+    idf_dict = get_idf_values(park_dict_filtered)
+    park_token_dict = aggregate_reviews(park_dict_filtered, idf_dict)
     similarity_scores = find_similar_parks(query_tokens, park_token_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
