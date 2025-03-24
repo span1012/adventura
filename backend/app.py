@@ -95,7 +95,7 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
                         inverted_dict[token].append((park, 1))
     return inverted_dict
 
-def aggregate_reviews(parks, idf_dict) -> dict[str, dict[str, int]]:
+def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
     """
     Function to create, for each distinct amusement park in the input dictionary,
     a dictionary mapping terms that appear in that park's reviews to their 
@@ -149,6 +149,27 @@ def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, i
                                     * count * idf_dict[token]
     return scores
 
+def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
+     """
+     Function to create and return a dictionary that maps amusement park names to 
+     Function to create and return a dictionary that maps business ids to 
+     the cosine similarity scores between their associated tokenized reviews and
+     the input tokenized query.
+     """
+     scores = {}
+     n_query_tokens = len(query_tokens)
+     for park, park_tokens in park_token_dict.items():
+         dot_product = 0
+         common_tokens = 0     # variable to store number of tokens in common
+                               # between the query and the reviews for this park  
+         for token in query_tokens:
+             if park_tokens.get(token) is not None:
+                 dot_product += park_tokens.get(token) * query_tokens.get(token)
+                 common_tokens += 1
+         total_tokens = n_query_tokens + len(park_tokens) - common_tokens
+         scores[park] = (dot_product / total_tokens) * 100
+     return scores
+
 def apply_filters(parks, locations=None, good_for_kids=None):
     """
     Function to apply location and good for kids filters to the park dictionary.
@@ -174,10 +195,12 @@ def json_search(query, locations=None, good_for_kids=None):
         else:
             query_tokens[token] += 1
     park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
-    inverted_dict = build_inverted_index(park_dict_filtered)
-    n_docs = num_docs(park_dict_filtered)
-    idf_dict = get_idf_values(park_dict_filtered, n_docs)
-    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
+    # inverted_dict = build_inverted_index(park_dict_filtered)
+    # n_docs = num_docs(park_dict_filtered)
+    # idf_dict = get_idf_values(park_dict_filtered, n_docs)
+    park_token_dict = aggregate_reviews(park_dict_filtered)
+    # similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
+    similarity_scores = find_similar_parks(query_tokens, park_token_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
     # create a dataframe to store the parks and their associated locations,
