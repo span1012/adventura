@@ -52,8 +52,7 @@ def num_docs(parks) -> int:
 def get_idf_values(parks, num_docs) -> dict[str, int]:
     """
     Function to create a dictionary mapping every term that appears in at least
-    one park review to the total number of reviews in which the term appears
-    across the entirety of yelp.json.
+    one park review to its associated inverse document frequency value.
     """
     idf_dict = {}
     for attributes in parks.values():
@@ -149,7 +148,7 @@ def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, i
                                     * count * idf_dict[token]
     return scores
 
-def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
+def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int]:
      """
      Function to create and return a dictionary that maps amusement park names to 
      Function to create and return a dictionary that maps business ids to 
@@ -164,7 +163,8 @@ def find_similar_parks(query_tokens, park_token_dict) -> dict[str, int]:
                                # between the query and the reviews for this park  
          for token in query_tokens:
              if park_tokens.get(token) is not None:
-                 dot_product += park_tokens.get(token) * query_tokens.get(token)
+                 dot_product += query_tokens.get(token) * idf_dict[token] \
+                                * park_tokens.get(token) * idf_dict[token]
                  common_tokens += 1
          total_tokens = n_query_tokens + len(park_tokens) - common_tokens
          scores[park] = (dot_product / total_tokens)
