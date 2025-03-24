@@ -135,7 +135,7 @@ def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, i
     the input tokenized query.
     """
     scores = {}
-    for token, frequency in query_tokens:
+    for token, frequency in query_tokens.items():
         for park, count in inverted_dict[token]:
             # initialize or update score accumulator
             if scores.get(park) is None:
