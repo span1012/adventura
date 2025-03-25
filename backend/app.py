@@ -102,7 +102,7 @@ def compute_review_norms(parks):
     park's associated reviews and taking the square root of their sum.
     """
     norm_dict = {}
-    for park, attributes in parks:
+    for park, attributes in parks.items():
         sum = 0
         for review in attributes['reviews']:
             sum += len(review['text'])
