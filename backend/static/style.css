@@ -209,3 +209,14 @@ select {
     gap: 8px;
     font-size: 14px;
 }
+
+textarea {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    resize: none;      
+    /* overflow: hidden;    /* <– hiding scrollbar */
+    line-height: 1.4;
+}
