@@ -215,6 +215,7 @@ def json_search(query, locations=None, good_for_kids=None):
     inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
+    park_norms = compute_review_norms(park_dict_filtered)
     # park_token_dict = aggregate_reviews(park_dict_filtered)
     similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict, park_norms)
     # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
