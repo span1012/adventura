@@ -234,31 +234,6 @@ def json_search(query, locations=None, good_for_kids=None):
     # return the top 10 parks
     return park_df.head(10).to_json(orient='records')
 
-def main():
-    query = "I love extreme roller coasters, especially ones with high speeds, \
-                big drops, and lots of excitement. I don’t care much for family \
-                rides or water attractions."
-    query_tokens = {}
-    for token in tokenize(query):
-        # token = token.lower()
-        if query_tokens.get(token) is None:
-            query_tokens[token] = 1
-        else:
-            query_tokens[token] += 1
-    park_dict_filtered = apply_filters(park_dict, None, None)
-    inverted_dict = build_inverted_index(park_dict_filtered)
-    n_docs = num_docs(park_dict_filtered)
-    idf_dict = get_idf_values(park_dict_filtered, n_docs)
-    park_norms = compute_review_norms(park_dict_filtered)
-    # park_token_dict = aggregate_reviews(park_dict_filtered)
-    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict, park_norms)
-    # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
-    average_park_ratings = calculate_average_ratings(park_dict_filtered)
-    print(similarity_scores)
-
-if __name__ == '__main__':
-    main()
-
 @app.route("/")
 def home():
     return render_template('base.html',title="sample html")
