@@ -87,9 +87,10 @@
 
     <script>
 
-        function answerBoxTemplate(name, rating, score) {
+        function answerBoxTemplate(name, location, rating, score) {
             return `<div class=''>
                 <h3 class='park-name'>${name}</h3>
+                <p class='park-location'>Location: ${location}</p>
                 <p class='park-rating'>Rating: ${rating}</p>
                 <p class='park-score'>Similarity score: ${score}</p>
             </div>`
