@@ -5,14 +5,14 @@
     }
 }
 
-.full-body-container{
+.full-body-container {
     position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    width:100%;
-    height:100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -25,9 +25,11 @@ body {
 }
 
 /* Text Styling */
-h1, h2 {
+h1,
+h2 {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
 h1 {
     font-size: 50px;
     text-align: center;
@@ -36,6 +38,7 @@ h1 {
     padding: 10px;
     color: #3793bc;
 }
+
 h2 {
     font-size: 40px;
     text-align: left;
@@ -43,6 +46,7 @@ h2 {
     padding: 10px;
     color: #e65667;
 }
+
 h3 {
     text-align: center;
     margin: 5px;
@@ -51,65 +55,65 @@ h3 {
 }
 
 
-#google-c{
-    color:#4285F4;
+#google-c {
+    color: #4285F4;
 }
 
-#google-s{
-    color:#DB4437;
+#google-s {
+    color: #DB4437;
 }
 
-#google-4{
-    color:	#F4B400;
+#google-4 {
+    color: #F4B400;
 }
 
-#google-3{
-    color:	#4285F4;
+#google-3 {
+    color: #4285F4;
 }
 
-#google-0-1{
-    color:	#0F9D58;
+#google-0-1 {
+    color: #0F9D58;
 }
 
-#google-0-2{
-    color:#DB4437;
+#google-0-2 {
+    color: #DB4437;
 }
 
-.google-colors{
+.google-colors {
     display: flex;
     align-items: center;
     font-size: 48px;
     font-family: 'Open Sans', sans-serif;
 }
 
-.google-colors h1{
+.google-colors h1 {
     margin-bottom: 0;
     margin-right: 3px;
 }
 
-.input-box{
+.input-box {
     border-radius: 5px;
-    border:1px solid black;
+    border: 1px solid black;
     background-color: white;
     display: flex;
     align-items: center;
     margin-top: 10px;
-    padding:10px;
+    padding: 10px;
     width: 600px;
 }
 
-.input-box img{
+.input-box img {
     height: 20px;
-    width:20px;
+    width: 20px;
 }
 
-.top-text{
+.top-text {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.input-box input{
+.input-box input {
     width: 100%;
     margin-left: 10px;
     font-size: 16px;
@@ -118,28 +122,29 @@ h3 {
     /* background-color: white; */
 }
 
-#answer-box{
+#answer-box {
     width: 700px;
-    margin-top:50px; 
+    margin-top: 50px;
 }
 
-.episode-title{
+.episode-title {
     font-family: 'Kanit', sans-serif;
 }
 
-.episode-desc{
+.episode-desc {
     font-family: 'Montserrat', sans-serif;
 }
 
 /* amanda add */
 
-input, select {
+input,
+select {
     width: 80%;
     /* padding: 8px; */
 }
 
 select {
-    margin-left: 15px; 
+    margin-left: 15px;
 }
 
 #kids {
@@ -153,7 +158,7 @@ select {
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    max-width: 600px; 
+    max-width: 600px;
     /* margin: 10px auto; */
 }
 
@@ -162,7 +167,7 @@ select {
     text-align: left;
 }
 
-.input-container select, 
+.input-container select,
 .input-container input {
     flex: 2;
     width: 100%;
@@ -175,7 +180,7 @@ select {
     display: flex;
     align-items: left;
     width: 100%;
-    max-width: 600px; 
+    max-width: 600px;
     margin: 10px auto;
 }
 
@@ -184,7 +189,7 @@ select {
     text-align: left;
 }
 
-.left-align select, 
+.left-align select,
 .left-align input {
     flex: 2;
     /* padding: 10px; */
@@ -198,7 +203,7 @@ select {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    flex:2;
+    flex: 2;
     width: 100%;
     max-width: 600px;
 }
@@ -216,7 +221,7 @@ textarea {
     padding: 10px;
     border: none;
     border-radius: 8px;
-    resize: none;      
+    resize: none;
     /* overflow: hidden;    /* <– hiding scrollbar */
     line-height: 1.4;
 }
