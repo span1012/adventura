@@ -144,7 +144,7 @@ def calculate_average_ratings(parks) -> dict[str, int]:
         rating_dict[park] = rating_sum / review_count
     return rating_dict
 
-def calculate_similarities(query_tokens, query_nrom, inverted_dict, idf_dict, \
+def calculate_similarities(query_tokens, query_norm, inverted_dict, idf_dict, \
                             park_norms) -> dict[str, int]:
     """
     Function to create and return a dictionary that maps business ids to 
@@ -163,7 +163,7 @@ def calculate_similarities(query_tokens, query_nrom, inverted_dict, idf_dict, \
                     scores[park] += frequency * idf_dict[token] \
                                     * count * idf_dict[token]
     for park, score in scores.items():
-        scores[park] = score / park_norms[park]
+        scores[park] = score / (query_norm * park_norms[park])
     return scores
 
 def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int]:
