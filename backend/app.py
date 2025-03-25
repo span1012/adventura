@@ -125,7 +125,7 @@ def compute_review_norms(park_reviews_dict, idf_dict):
     for park, tf_dict in park_reviews_dict.items():
         sum = 0
         for token, count in tf_dict.items():
-            sum += count * idf_dict[token]
+            sum += (count * idf_dict[token]) ** 2
         norm_dict[park] = math.sqrt(sum)
     return norm_dict
 
@@ -219,7 +219,7 @@ def json_search(query, locations=None, good_for_kids=None):
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
     query_norm = 0
     for token, count in query_tokens.items():
-        query_norm += count * idf_dict[token]
+        query_norm += (count * idf_dict[token]) ** 2
     query_norm = math.sqrt(query_norm)
     park_token_dict = aggregate_reviews(park_dict_filtered)
     park_norms = compute_review_norms(park_token_dict, idf_dict)
