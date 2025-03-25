@@ -144,7 +144,8 @@ def calculate_average_ratings(parks) -> dict[str, int]:
         rating_dict[park] = rating_sum / review_count
     return rating_dict
 
-def calculate_similarities(query_tokens, inverted_dict, idf_dict, park_norms) -> dict[str, int]:
+def calculate_similarities(query_tokens, query_nrom, inverted_dict, idf_dict, \
+                            park_norms) -> dict[str, int]:
     """
     Function to create and return a dictionary that maps business ids to 
     the cosine similarity scores between their associated tokenized reviews and
@@ -205,19 +206,23 @@ def apply_filters(parks, locations=None, good_for_kids=None):
 # Sample search using json with pandas
 def json_search(query, locations=None, good_for_kids=None):
     query_tokens = {}
+    n_query_tokens = 0
     for token in tokenize(query):
         # token = token.lower()
         if query_tokens.get(token) is None:
             query_tokens[token] = 1
         else:
             query_tokens[token] += 1
+        n_query_tokens += 1
+    query_norm = math.sqrt(n_query_tokens)
     park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
     inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
     park_norms = compute_review_norms(park_dict_filtered)
     # park_token_dict = aggregate_reviews(park_dict_filtered)
-    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict, park_norms)
+    similarity_scores = calculate_similarities(query_tokens, query_norm, \
+                                                inverted_dict, idf_dict, park_norms)
     # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
