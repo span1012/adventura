@@ -37,9 +37,22 @@
             <h2>Find Your Perfect Amusement Park</h2>
             <h3>Tell us your preferences and we'll recommend the best amusement parks for you</h3>
 
+            <!-- <div class="left-align">
+                <div class="input-box" onclick="sendFocus()">
+                    <input placeholder="Describe your ideal amusement park experience" id="filter-text-val"
+                        onkeyup="filterText()">
+                </div>
+            </div> -->
+
             <div class="left-align">
                 <div class="input-box" onclick="sendFocus()">
-                    <input placeholder="Describe your ideal amusement park experience" id="filter-text-val">
+                    <textarea
+                        placeholder="Describe your ideal amusement park experience"
+                        id="filter-text-val"
+                        oninput="autoResize(this)"
+                        onkeyup="filterText()"
+                        rows="1"
+                    ></textarea>
                 </div>
             </div>
 
@@ -71,7 +84,7 @@
                 </select>
             </div>
 
-            <button onclick="filterText()">Find Parks</button>
+            <button onclick="getHasKids()">Find Parks</button>
         </div>
 
         <div id="answer-box"></div>
@@ -79,55 +92,50 @@
 
     <script>
 
-        function answerBoxTemplate(name, location, rating, score) {
+        function answerBoxTemplate(name, rating, score) {
             return `<div class=''>
-            <h3 class='park-name'>${name}</h3>
-            <p class='park-location'>Location: ${location}</p>
-            <p class='park-rating'>Rating: ${rating}</p>
-            <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
-        </div>`
+                <h3 class='park-name'>${name}</h3>
+                <p class='park-rating'>Rating: ${rating}</p>
+                <p class='park-score'>Similarity score: ${score}</p>
+            </div>`
         }
 
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
         }
 
-        function getSelectedLocations() {
-            const checkboxes = document.querySelectorAll('input[name="location"]:checked');
-            return Array.from(checkboxes).map(cb => cb.value);
+        function filterText() {
+            document.getElementById("answer-box").innerHTML = ""
+            console.log(document.getElementById("filter-text-val").value)
+            fetch("/parks?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
+                .then((response) => response.json())
+                .then((data) => data.forEach(row => {
+
+                    let tempDiv = document.createElement("div")
+                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.rating, row.score)
+                    document.getElementById("answer-box").appendChild(tempDiv)
+                }));
+        }
+
+        function getSelectedStates() {
+            let selectedStates = []
+
+            let checkboxes = document.querySelectorAll('input[name="location"]:checked')
+
+            checkboxes.forEach((checkbox) => {
+                selectedStates.push(checkbox.value)
+            })
+
+            console.log("Selected states:", selectedStates)
+            // selectedStates gives you a list of states
         }
 
         function getHasKids() {
-            return document.getElementById("kids").value;
-        }
+            let kidsSelect = document.getElementById("kids")
+            let selectedValue = kidsSelect.value
 
-        function filterText() {
-            document.getElementById("answer-box").innerHTML = "";
-
-            const query = document.getElementById("filter-text-val").value;
-            const locations = getSelectedLocations();
-            const kidsPref = getHasKids();
-
-            const params = new URLSearchParams();
-            if (query) params.append("title", query);
-            if (locations.length > 0) params.append("locations", locations.join(","));
-            if (kidsPref && kidsPref !== "doesn't matter") params.append("good_for_kids", kidsPref);
-
-            console.log("Sending request with params:", params.toString());
-
-            fetch("/parks?" + params.toString())
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.length === 0) {
-                        document.getElementById("answer-box").innerHTML = "<p>No parks found matching your criteria.</p>";
-                    } else {
-                        data.forEach(row => {
-                            let tempDiv = document.createElement("div");
-                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score);
-                            document.getElementById("answer-box").appendChild(tempDiv);
-                        });
-                    }
-                });
+            console.log("Has kids?:", selectedValue)
+            // selectedValue is either "yes", "no", or "doesn't matter"
         }
 
     </script>
