@@ -99,39 +99,47 @@
             document.getElementById('filter-text-val').focus()
         }
 
-        function filterText() {
-            document.getElementById("answer-box").innerHTML = ""
-            console.log(document.getElementById("filter-text-val").value)
-            fetch("/parks?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
-                .then((response) => response.json())
-                .then((data) => data.forEach(row => {
-
-                    let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.rating, row.score)
-                    document.getElementById("answer-box").appendChild(tempDiv)
-                }));
-        }
-
-        function getSelectedStates() {
-            let selectedStates = []
-
-            let checkboxes = document.querySelectorAll('input[name="location"]:checked')
-
-            checkboxes.forEach((checkbox) => {
-                selectedStates.push(checkbox.value)
-            })
-
-            console.log("Selected states:", selectedStates)
-            // selectedStates gives you a list of states
+        function getSelectedLocations() {
+            const checkboxes = document.querySelectorAll('input[name="location"]:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
         }
 
         function getHasKids() {
             let kidsSelect = document.getElementById("kids")
             let selectedValue = kidsSelect.value
 
-            console.log("Has kids?:", selectedValue)
+            console.log("Sending request with params:", params.toString());
             // selectedValue is either "yes", "no", or "doesn't matter"
+
+            fetch("/parks?" + params.toString())
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.length === 0) {
+                        document.getElementById("answer-box").innerHTML = "<p>No parks found matching your criteria.</p>";
+                    } else {
+                        data.forEach(row => {
+                            let tempDiv = document.createElement("div");
+                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score);
+                            document.getElementById("answer-box").appendChild(tempDiv);
+                        });
+                    }
+                });
         }
+
+        function filterText() {
+            document.getElementById("answer-box").innerHTML = "";
+
+            const query = document.getElementById("filter-text-val").value;
+            const locations = getSelectedLocations();
+            const kidsPref = getHasKids();
+
+            console.log("Sending request with params:", params.toString());
+        }
+
+        const params = new URLSearchParams();
+        if (query) params.append("title", query);
+        if (locations.length > 0) params.append("locations", locations.join(","));
+        if (kidsPref && kidsPref !== "doesn't matter") params.append("good_for_kids", kidsPref);
 
     </script>
 </body>
