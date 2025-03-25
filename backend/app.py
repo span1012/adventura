@@ -207,19 +207,20 @@ def apply_filters(parks, locations=None, good_for_kids=None):
 # Sample search using json with pandas
 def json_search(query, locations=None, good_for_kids=None):
     query_tokens = {}
-    n_query_tokens = 0
     for token in tokenize(query):
         # token = token.lower()
         if query_tokens.get(token) is None:
             query_tokens[token] = 1
         else:
             query_tokens[token] += 1
-        n_query_tokens += 1
-    query_norm = math.sqrt(n_query_tokens)
     park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
     inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
+    query_norm = 0
+    for token, count in query_tokens.items():
+        query_norm += count * idf_dict[token]
+    query_norm = math.sqrt(query_norm)
     park_token_dict = aggregate_reviews(park_dict_filtered)
     park_norms = compute_review_norms(park_token_dict, idf_dict)
     similarity_scores = calculate_similarities(query_tokens, query_norm, \
