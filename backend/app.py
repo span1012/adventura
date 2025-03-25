@@ -95,20 +95,6 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
                         inverted_dict[token].append((park, 1))
     return inverted_dict
 
-def compute_review_norms(parks):
-    """
-    Function to calculate and return the norm of each distinct park represented
-    in yelp.json. The norms are computed by aggregating the lengths of each 
-    park's associated reviews and taking the square root of their sum.
-    """
-    norm_dict = {}
-    for park, attributes in parks.items():
-        sum = 0
-        for review in attributes['reviews']:
-            sum += len(review['text'])
-        norm_dict[park] = math.sqrt(sum)
-    return norm_dict
-
 def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
     """
     Function to create, for each distinct amusement park in the input dictionary,
@@ -127,6 +113,21 @@ def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
                     token_dict[token] += 1
         park_token_dict[park] = token_dict
     return park_token_dict
+
+def compute_review_norms(park_reviews_dict, idf_dict):
+    """
+    Function to calculate and return the norm of each distinct park represented
+    in yelp.json. The norms are computed by aggregating the TF-IDF weights of
+    each park across all of its associated reviews and then taking the square 
+    root of that sum.
+    """
+    norm_dict = {}
+    for park, tf_dict in park_reviews_dict.items():
+        sum = 0
+        for token, count in tf_dict.items():
+            sum += count * idf_dict[token]
+        norm_dict[park] = math.sqrt(sum)
+    return norm_dict
 
 def calculate_average_ratings(parks) -> dict[str, int]:
     """
@@ -219,8 +220,8 @@ def json_search(query, locations=None, good_for_kids=None):
     inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
-    park_norms = compute_review_norms(park_dict_filtered)
-    # park_token_dict = aggregate_reviews(park_dict_filtered)
+    park_token_dict = aggregate_reviews(park_dict_filtered)
+    park_norms = compute_review_norms(park_token_dict, idf_dict)
     similarity_scores = calculate_similarities(query_tokens, query_norm, \
                                                 inverted_dict, idf_dict, park_norms)
     # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
