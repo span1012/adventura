@@ -79,7 +79,7 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
     inverted_dict = {}
     for park, attributes in parks.items():
         for review in attributes['reviews']:
-            for token in review:
+            for token in tokenize(review):
                 # token = token.lower()
                 if inverted_dict.get(token) is None:
                     inverted_dict[token] = [(park, 1)]
@@ -217,6 +217,30 @@ def json_search(query, locations=None, good_for_kids=None):
     # return the top 10 parks
     return park_df.head(10).to_json(orient='records')
 
+def main():
+    query = "I love extreme roller coasters, especially ones with high speeds, \
+                big drops, and lots of excitement. I don’t care much for family \
+                rides or water attractions."
+    query_tokens = {}
+    for token in tokenize(query):
+        # token = token.lower()
+        if query_tokens.get(token) is None:
+            query_tokens[token] = 1
+        else:
+            query_tokens[token] += 1
+    park_dict_filtered = apply_filters(park_dict, None, None)
+    inverted_dict = build_inverted_index(park_dict_filtered)
+    n_docs = num_docs(park_dict_filtered)
+    idf_dict = get_idf_values(park_dict_filtered, n_docs)
+    # park_token_dict = aggregate_reviews(park_dict_filtered)
+    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
+    # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
+    average_park_ratings = calculate_average_ratings(park_dict_filtered)
+    print(similarity_scores)
+
+if __name__ == '__main__':
+    main()
+
 @app.route("/")
 def home():
     return render_template('base.html',title="sample html")
@@ -233,5 +257,5 @@ def episodes_search():
     good_for_kids = request.args.get("good_for_kids")
     return json_search(text, locations, good_for_kids)
 
-if 'DB_NAME' not in os.environ:
-    app.run(debug=True,host="0.0.0.0",port=5000)
+# if 'DB_NAME' not in os.environ:
+#     app.run(debug=True,host="0.0.0.0",port=5000)
