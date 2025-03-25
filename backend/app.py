@@ -5,6 +5,7 @@ from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 import pandas as pd
 import re
+import math
 
 # ROOT_PATH for linking with all your files. 
 # Feel free to use a config.py or settings.py with a global export variable
@@ -94,6 +95,20 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
                         inverted_dict[token].append((park, 1))
     return inverted_dict
 
+def compute_review_norms(parks):
+    """
+    Function to calculate and return the norm of each distinct park represented
+    in yelp.json. The norms are computed by aggregating the lengths of each 
+    park's associated reviews and taking the square root of their sum.
+    """
+    norm_dict = {}
+    for park, attributes in parks:
+        sum = 0
+        for review in attributes['reviews']:
+            sum += len(review['text'])
+        norm_dict[park] = math.sqrt(sum)
+    return norm_dict
+
 def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
     """
     Function to create, for each distinct amusement park in the input dictionary,
@@ -129,7 +144,7 @@ def calculate_average_ratings(parks) -> dict[str, int]:
         rating_dict[park] = rating_sum / review_count
     return rating_dict
 
-def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, int]:
+def calculate_similarities(query_tokens, inverted_dict, idf_dict, park_norms) -> dict[str, int]:
     """
     Function to create and return a dictionary that maps business ids to 
     the cosine similarity scores between their associated tokenized reviews and
@@ -146,6 +161,8 @@ def calculate_similarities(query_tokens, inverted_dict, idf_dict) -> dict[str, i
                 else:
                     scores[park] += frequency * idf_dict[token] \
                                     * count * idf_dict[token]
+    for park, score in scores.items():
+        scores[park] = score / park_norms[park]
     return scores
 
 def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int]:
@@ -232,8 +249,9 @@ def main():
     inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
+    park_norms = compute_review_norms(park_dict_filtered)
     # park_token_dict = aggregate_reviews(park_dict_filtered)
-    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict)
+    similarity_scores = calculate_similarities(query_tokens, inverted_dict, idf_dict, park_norms)
     # similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
     print(similarity_scores)
