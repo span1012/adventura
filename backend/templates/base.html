@@ -134,12 +134,12 @@
             const kidsPref = getHasKids();
 
             console.log("Sending request with params:", params.toString());
-        }
 
-        const params = new URLSearchParams();
-        if (query) params.append("title", query);
-        if (locations.length > 0) params.append("locations", locations.join(","));
-        if (kidsPref && kidsPref !== "doesn't matter") params.append("good_for_kids", kidsPref);
+            const params = new URLSearchParams();
+            if (query) params.append("title", query);
+            if (locations.length > 0) params.append("locations", locations.join(","));
+            if (kidsPref && kidsPref !== "doesn't matter") params.append("good_for_kids", kidsPref);
+        }
 
     </script>
 </body>
