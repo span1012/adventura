@@ -89,7 +89,7 @@
 
     <script>
 
-        function answerBoxTemplate(name, location, rating, score) {
+        function answerBoxTemplate(name, location, rating, score, reviews) {
             return `<div class=''>
             <h3 class='park-name'>${name}</h3>
             <p class='park-location'>Location: ${location}</p>
@@ -98,7 +98,7 @@
             ${reviews?.length > 0 ? `
                 <div class='park-reviews'>Recent Reviews: 
                     <ul>
-                        ${reviews.slice(0, 2).map(r => `<li>"${r.text}"</li>`).join('')}
+                        ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
                     </ul>
                 </div>` : ""}
         </div>`
