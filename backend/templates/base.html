@@ -91,11 +91,17 @@
 
         function answerBoxTemplate(name, location, rating, score) {
             return `<div class=''>
-<h3 class='park-name'>${name}</h3>
-<p class='park-location'>Location: ${location}</p>
-<p class='park-rating'>Rating: ${rating}</p>
-<p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
-</div>`
+            <h3 class='park-name'>${name}</h3>
+            <p class='park-location'>Location: ${location}</p>
+            <p class='park-rating'>Rating: ${rating}</p>
+            <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
+            ${reviews?.length > 0 ? `
+                <div class='park-reviews'>Recent Reviews: 
+                    <ul>
+                        ${reviews.slice(0, 2).map(r => `<li>"${r.text}"</li>`).join('')}
+                    </ul>
+                </div>` : ""}
+        </div>`
         }
 
         function sendFocus() {
@@ -133,7 +139,7 @@
                     } else {
                         data.forEach(row => {
                             let tempDiv = document.createElement("div");
-                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score);
+                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score, row.reviews);
                             document.getElementById("answer-box").appendChild(tempDiv);
                         });
                     }
