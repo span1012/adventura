@@ -292,7 +292,7 @@ def json_search(query, locations=None, good_for_kids=None):
     inner_products = truncated_mat.dot(truncated_mat[top_park_index,:])
     park_norms = np.linalg.norm(truncated_mat, axis=1)
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
-    similarity_scores = sorted(zip(cosine_sims, park_names))
+    similarity_scores = sorted(zip(park_names, cosine_sims))
 
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
@@ -300,7 +300,7 @@ def json_search(query, locations=None, good_for_kids=None):
     # average ratings, and similarity scores with the user query
 
     park_df = pd.DataFrame(columns=['name', 'location', 'score', 'rating', 'reviews'])
-    for park, score in similarity_scores:
+    for scp, score in similarity_scores:
         top_reviews = [review['text'] for review in park_dict_filtered[park]['reviews'][:3]]
 
         new_row = pd.DataFrame({'name': park_dict_filtered[park]['name'],
