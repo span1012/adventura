@@ -7,6 +7,7 @@ import pandas as pd
 import re
 import math
 from nltk import NLTKWordTokenizer, PorterStemmer
+from geopy.distance import geodesic
 
 # for region location
 region_to_states = {
@@ -17,7 +18,7 @@ region_to_states = {
     "West": ["CA", "NV", "ID"]
 }
 
-# ROOT_PATH for linking with all your files. 
+# ROOT_PATH for linking with all your files.
 # Feel free to use a config.py or settings.py with a global export variable
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..",os.curdir))
 
@@ -25,7 +26,7 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..",os.curdir))
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Specify the path to the JSON file relative to the current script
-json_file_path = os.path.join(current_directory, 'yelp.json')
+json_file_path = os.path.join(current_directory, 'parks_details.json')
 
 with open(json_file_path, 'r') as file:
     data = json.load(file)
@@ -34,7 +35,9 @@ with open(json_file_path, 'r') as file:
         park_dict[entry['business_id']] = {
             'name': entry['name'],
             'state': entry['state'],
-            'reviews': entry['reviews']
+            'reviews': entry['reviews'],
+            'latitude': entry['latitude'],
+            'longitude': entry['longitude']
         }
         # if good for kids is in attributes, add it to the dictionary
         if entry['attributes'] and 'GoodForKids' in entry['attributes']:
@@ -111,7 +114,7 @@ def build_inverted_index(parks) -> dict[str, list[(str, int)]]:
 def aggregate_reviews(parks) -> dict[str, dict[str, int]]:
     """
     Function to create, for each distinct amusement park in the input dictionary,
-    a dictionary mapping terms that appear in that park's reviews to their 
+    a dictionary mapping terms that appear in that park's reviews to their
     associated frequency values.
     """
     park_token_dict = {}
@@ -131,7 +134,7 @@ def compute_review_norms(park_reviews_dict, idf_dict):
     """
     Function to calculate and return the norm of each distinct park represented
     in yelp.json. The norms are computed by aggregating the TF-IDF weights of
-    each park across all of its associated reviews and then taking the square 
+    each park across all of its associated reviews and then taking the square
     root of that sum.
     """
     norm_dict = {}
@@ -145,7 +148,7 @@ def compute_review_norms(park_reviews_dict, idf_dict):
 def calculate_average_ratings(parks) -> dict[str, int]:
     """
     Function to calculate each distinct park's average rating, out of five stars,
-    across all of its associated reviews. Returns a dictionary mapping business 
+    across all of its associated reviews. Returns a dictionary mapping business
     ids to their average ratings.
     """
     rating_dict = {}
@@ -161,7 +164,7 @@ def calculate_average_ratings(parks) -> dict[str, int]:
 def calculate_similarities(query_tokens, query_norm, inverted_dict, idf_dict, \
                             park_norms) -> dict[str, int]:
     """
-    Function to create and return a dictionary that maps business ids to 
+    Function to create and return a dictionary that maps business ids to
     the cosine similarity scores between their associated tokenized reviews and
     the input tokenized query.
     """
@@ -182,8 +185,8 @@ def calculate_similarities(query_tokens, query_norm, inverted_dict, idf_dict, \
 
 def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int]:
      """
-     Function to create and return a dictionary that maps amusement park names to 
-     Function to create and return a dictionary that maps business ids to 
+     Function to create and return a dictionary that maps amusement park names to
+     Function to create and return a dictionary that maps business ids to
      the cosine similarity scores between their associated tokenized reviews and
      the input tokenized query.
      """
@@ -192,7 +195,7 @@ def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int
      for park, park_tokens in park_token_dict.items():
          dot_product = 0
          common_tokens = 0     # variable to store number of tokens in common
-                               # between the query and the reviews for this park  
+                               # between the query and the reviews for this park
          for token in query_tokens:
              if park_tokens.get(token) is not None:
                  dot_product += query_tokens.get(token) * idf_dict[token] \
@@ -202,23 +205,46 @@ def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int
          scores[park] = (dot_product / total_tokens)
      return scores
 
-def apply_filters(parks, locations=None, good_for_kids=None):
+def apply_filters(parks, locations=None, latitude=None, longitude=None, distance=None, good_for_kids=None):
     """
-    Function to apply location and good for kids filters to the park dictionary.
+    Function to apply location, distance, and good for kids filters to the park dictionary.
     """
-    # filter by location
-    if (parks.items() is None):
+    if not parks:
         print("No parks found")
         return {}
+
+    # filter by location
     if locations is not None and len(locations) > 0:
         parks = {k: v for (k, v) in parks.items() if v['state'] in locations}
+
+    # filter by distance
+    if latitude and longitude and distance:
+        f_parks = {}
+        for k, v in parks.items():
+            coord1 = (latitude, longitude)
+            coord2 = (v['latitude'], v['longitude'])
+            calc_dist = geodesic(coord1, coord2).miles
+
+            # print(f"Distance to park {k} (state {v['state']}): {calc_dist} miles")
+            if distance == "local" and calc_dist <= 100:
+                f_parks[k] = v
+            elif distance == "regional" and calc_dist <= 250:
+                f_parks[k] = v
+            elif distance == "long" and calc_dist <= 500:
+                f_parks[k] = v
+            elif distance == "fly":
+                f_parks[k] = v
+
+        parks = f_parks
+
     # filter by good for kids
     if good_for_kids == "yes":
         parks = {k: v for (k, v) in parks.items() if v['good_for_kids'] == "True"}
+
     return parks
 
 # Sample search using json with pandas
-def json_search(query, locations=None, good_for_kids=None):
+def json_search(query, locations=None, latitude=None, longitude=None, distance=None, good_for_kids=None):
     query_tokens = {}
     for token in tokenize(query):
         # token = token.lower()
@@ -226,7 +252,7 @@ def json_search(query, locations=None, good_for_kids=None):
             query_tokens[token] = 1
         else:
             query_tokens[token] += 1
-    park_dict_filtered = apply_filters(park_dict, locations, good_for_kids)
+    park_dict_filtered = apply_filters(park_dict, locations, latitude, longitude, distance, good_for_kids)
     inverted_dict = build_inverted_index(park_dict_filtered)
     n_docs = num_docs(park_dict_filtered)
     idf_dict = get_idf_values(park_dict_filtered, n_docs)
@@ -285,10 +311,15 @@ def episodes_search():
     else:
         states = None
 
+    # apply geolocation filter (distance)
+    latitude = request.args.get("latitude")
+    longitude = request.args.get("longitude")
+    distance = request.args.get("travel-distance")
+
     # apply good for kids filter
     good_for_kids = request.args.get("good_for_kids")
 
-    return json_search(text, states, good_for_kids)
+    return json_search(text, states, latitude, longitude, distance, good_for_kids)
 
 # if 'DB_NAME' not in os.environ:
 #     app.run(debug=True,host="0.0.0.0",port=5000)

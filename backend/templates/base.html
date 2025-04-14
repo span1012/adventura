@@ -94,7 +94,8 @@
                     <option value="long">Long distance (weekend)</option>
                     <option value="fly">Willing to fly</option>
                 </select>
-            </div>            
+            </div>
+            <p id="location-error"></p>
 
             <button onclick="filterText()">Find Parks</button>
 
@@ -106,6 +107,30 @@
 
 
     <script>
+        let latitude = null;
+        let longitude = null;
+
+        window.onload = function() {
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+            };
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getPosition, undefined, options);
+            } else {
+                document.getElementById("location-error").innerText = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function getPosition(pos) {
+            latitude = pos.coords.latitude;
+            longitude = pos.coords.longitude;
+
+            console.log("Latitude: " + latitude + "\nLongitude: " + longitude);
+            console.log("Accuracy (in m):", pos.coords.accuracy);
+        }
 
         function answerBoxTemplate(name, location, rating, score, reviews) {
             return `<div class=''>
@@ -114,7 +139,7 @@
             <p class='park-rating'>Rating: ${rating}</p>
             <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
             ${reviews?.length > 0 ? `
-                <div class='park-reviews'>Recent Reviews: 
+                <div class='park-reviews'>Recent Reviews:
                     <ul>
                         ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
                     </ul>
@@ -169,6 +194,9 @@
             const params = new URLSearchParams();
             if (query) params.append("title", query);
             if (locations.length > 0) params.append("locations", locations.join(","));
+            if (latitude && longitude) params.append("latitude", latitude);
+            if (latitude && longitude) params.append("longitude", longitude);
+            if (latitude && longitude) params.append("travel-distance", getTravelDistance());
             if (kidsPref && kidsPref !== "doesn't matter") params.append("good_for_kids", kidsPref);
 
             console.log("Sending request with params:", params.toString());
