@@ -6,6 +6,7 @@ from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 import pandas as pd
 import re
 import math
+from nltk import NLTKWordTokenizer, PorterStemmer
 
 # for region location
 region_to_states = {
@@ -47,7 +48,10 @@ def tokenize(text):
     """
     Function to tokenize the given input string.
     """
-    return re.findall(r'[a-z]+', text.lower())
+    stemmer = PorterStemmer()
+    tokenizer = NLTKWordTokenizer()
+    tokens = tokenizer.tokenize(text)
+    return [stemmer.stem(token) for token in tokens]
 
 def num_docs(parks) -> int:
     """
