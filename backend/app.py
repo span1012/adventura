@@ -28,7 +28,7 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..",os.curdir))
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Specify the path to the JSON file relative to the current script
-json_file_path = os.path.join(current_directory, 'yelp.json')
+json_file_path = os.path.join(current_directory, 'parks_details.json')
 
 with open(json_file_path, 'r') as file:
     data = json.load(file)
@@ -288,9 +288,8 @@ def json_search(query, locations=None, good_for_kids=None):
     truncated_mat = svd.fit_transform(term_park_mat)
     truncated_parks = pd.DataFrame(truncated_mat)
     park_names = [attributes['name'] for attributes in park_dict_filtered.values()]
-    truncated_parks["Park Name"] = park_names
-    inner_products = truncated_parks.dot(updated_query)
-    park_norms = np.linalg.norm(truncated_parks, axis=1)
+    inner_products = truncated_mat.dot(updated_query)
+    park_norms = np.linalg.norm(truncated_mat, axis=1)
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
     similarity_scores = sorted(zip(cosine_sims, park_names))
 
@@ -344,13 +343,11 @@ def main():
     term_park_mat = get_term_park_matrix(park_dict_filtered, all_tokens)
     svd = TruncatedSVD(n_components=200, n_iter=20)
     truncated_mat = svd.fit_transform(term_park_mat)
-    truncated_parks = pd.DataFrame(truncated_mat)
     park_names = [attributes['name'] for attributes in park_dict_filtered.values()]
-    inner_products = truncated_parks.dot(truncated_parks[top_park_index, :])
-    park_norms = np.linalg.norm(truncated_parks, axis=1)
+    inner_products = truncated_mat.dot(truncated_mat[top_park_index,:])
+    park_norms = np.linalg.norm(truncated_mat, axis=1)
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
     park_scores = sorted(zip(cosine_sims, park_names))
-    print(park_scores)
 
 if __name__ == '__main__':
     main()
