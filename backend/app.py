@@ -7,6 +7,15 @@ import pandas as pd
 import re
 import math
 
+# for region location
+region_to_states = {
+    "Southeast": ["FL", "TN", "MO", "LA"],
+    "Northeast": ["PA", "NJ", "DE"],
+    "Midwest": ["IN", "IL"],
+    "Southwest": ["AZ"],
+    "West": ["CA", "NV", "ID"]
+}
+
 # ROOT_PATH for linking with all your files. 
 # Feel free to use a config.py or settings.py with a global export variable
 os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..",os.curdir))
@@ -253,14 +262,29 @@ def home():
 @app.route("/parks")
 def episodes_search():
     text = request.args.get("title")
+    # ––––––––––– Version 1 –––––––––––
+    # # apply location filter
+    # locations = request.args.get("locations")
+    # if locations:
+    #     locations = locations.split(",")
+    #     locations = [location.strip() for location in locations]
+
+    # ––––––––––– Version 2 –––––––––––
     # apply location filter
-    locations = request.args.get("locations")
-    if locations:
-        locations = locations.split(",")
-        locations = [location.strip() for location in locations]
+    # get regions + expand to states
+    regions = request.args.get("regions")
+    if regions:
+        regions = regions.split(",")
+        states = []
+        for region in regions:
+            states.extend(region_to_states.get(region, []))
+    else:
+        states = None
+
     # apply good for kids filter
     good_for_kids = request.args.get("good_for_kids")
-    return json_search(text, locations, good_for_kids)
+
+    return json_search(text, states, good_for_kids)
 
 # if 'DB_NAME' not in os.environ:
 #     app.run(debug=True,host="0.0.0.0",port=5000)

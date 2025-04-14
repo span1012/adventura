@@ -48,7 +48,8 @@
             <div class="input-container left-align">
                 <label for="location">Preferred Locations (State):</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" name="location" value="FL"> Florida (FL)</label>
+                    <!-- ––––––––––––––––––– Version 1: Checking by Individual States ––––––––––––––––––– -->
+                    <!-- <label><input type="checkbox" name="location" value="FL"> Florida (FL)</label>
                     <label><input type="checkbox" name="location" value="PA"> Pennsylvania
                         (PA)</label>
                     <label><input type="checkbox" name="location" value="TN"> Tennessee (TN)</label>
@@ -63,7 +64,14 @@
                     <label><input type="checkbox" name="location" value="IL"> Illinois (IL)</label>
                     <label><input type="checkbox" name="location" value="DE"> Delaware (DE)</label>
                     <label><input type="checkbox" name="location" value="CA"> California
-                        (CA)</label>
+                        (CA)</label> -->
+
+                    <!-- ––––––––––––––––––– Version 2 ––––––––––––––––––– -->
+                    <label><input type="checkbox" name="location" value="Southeast"> Southeast (FL, TN, MO, LA)</label>
+                    <label><input type="checkbox" name="location" value="Northeast"> Northeast (PA, NJ, DE)</label>
+                    <label><input type="checkbox" name="location" value="Midwest"> Midwest (IN, IL)</label>
+                    <label><input type="checkbox" name="location" value="Southwest"> Southwest (AZ)</label>
+                    <label><input type="checkbox" name="location" value="West"> West (CA, NV, ID)</label>
 
                 </div>
 
@@ -119,8 +127,28 @@
         }
 
         function getSelectedLocations() {
+            // –––––––––––––––––––––––––– Version 1 ––––––––––––––––––––––––––
+            // const checkboxes = document.querySelectorAll('input[name="location"]:checked');
+            // return Array.from(checkboxes).map(cb => cb.value);
+
+            // –––––––––––––––––––––––––– Version 2 ––––––––––––––––––––––––––
+            const regionToStates = {
+                "Southeast": ["FL", "TN", "MO", "LA"],
+                "Northeast": ["PA", "NJ", "DE"],
+                "Midwest": ["IN", "IL"],
+                "Southwest": ["AZ"],
+                "West": ["CA", "NV", "ID"]
+            };
+
             const checkboxes = document.querySelectorAll('input[name="location"]:checked');
-            return Array.from(checkboxes).map(cb => cb.value);
+            let states = [];
+            checkboxes.forEach(cb => {
+                const region = cb.value;
+                if (regionToStates[region]) {
+                    states = states.concat(regionToStates[region]);
+                }
+            });
+            return states;
         }
 
         function getHasKids() {
