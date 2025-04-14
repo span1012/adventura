@@ -346,7 +346,7 @@ def main():
     truncated_mat = svd.fit_transform(term_park_mat)
     truncated_parks = pd.DataFrame(truncated_mat)
     park_names = [attributes['name'] for attributes in park_dict_filtered.values()]
-    inner_products = truncated_parks.dot(truncated_parks[park_reverse_index[most_similar_park]])
+    inner_products = truncated_parks.dot(truncated_parks[top_park_index, :])
     park_norms = np.linalg.norm(truncated_parks, axis=1)
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
     park_scores = sorted(zip(cosine_sims, park_names))
