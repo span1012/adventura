@@ -300,7 +300,7 @@ def json_search(query, locations=None, good_for_kids=None):
     # average ratings, and similarity scores with the user query
 
     park_df = pd.DataFrame(columns=['name', 'location', 'score', 'rating', 'reviews'])
-    for park, score in similarity_scores.items():
+    for park, score in similarity_scores:
         top_reviews = [review['text'] for review in park_dict_filtered[park]['reviews'][:3]]
 
         new_row = pd.DataFrame({'name': park_dict_filtered[park]['name'],
