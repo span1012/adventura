@@ -281,14 +281,15 @@ def json_search(query, locations=None, good_for_kids=None):
     similarity_scores = calculate_similarities(query_tokens, query_norm, \
                                                 inverted_dict, idf_dict, park_norms)
     similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
+    park_reverse_index = {park : index for index, park in enumerate(park_dict_filtered)}
     most_similar_park = max(similarity_scores, key=similarity_scores.get) 
+    top_park_index = park_reverse_index[most_similar_park]
     
     term_park_mat = get_term_park_matrix(park_dict_filtered, all_tokens)
     svd = TruncatedSVD(n_components=200, n_iter=20)
     truncated_mat = svd.fit_transform(term_park_mat)
-    truncated_parks = pd.DataFrame(truncated_mat)
     park_names = [attributes['name'] for attributes in park_dict_filtered.values()]
-    inner_products = truncated_mat.dot(updated_query)
+    inner_products = truncated_mat.dot(truncated_mat[top_park_index,:])
     park_norms = np.linalg.norm(truncated_mat, axis=1)
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
     similarity_scores = sorted(zip(cosine_sims, park_names))
