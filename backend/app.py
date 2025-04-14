@@ -288,11 +288,11 @@ def json_search(query, locations=None, good_for_kids=None):
     term_park_mat = get_term_park_matrix(park_dict_filtered, all_tokens)
     svd = TruncatedSVD(n_components=200, n_iter=20)
     truncated_mat = svd.fit_transform(term_park_mat)
-    park_names = [attributes['name'] for attributes in park_dict_filtered.values()]
+    park_ids = [id for id in park_dict_filtered.keys()]
     inner_products = truncated_mat.dot(truncated_mat[top_park_index,:])
     park_norms = np.linalg.norm(truncated_mat, axis=1)
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
-    similarity_scores = sorted(zip(park_names, cosine_sims))
+    similarity_scores = sorted(zip(park_ids, cosine_sims))
 
     average_park_ratings = calculate_average_ratings(park_dict_filtered)
 
