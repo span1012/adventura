@@ -225,3 +225,16 @@ textarea {
     /* overflow: hidden;    /* <– hiding scrollbar */
     line-height: 1.4;
 }
+
+.result-box {
+    border: 2px solid #3793bc; 
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #ffffff; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+.park-name {
+    font-size: 18px; 
+}
