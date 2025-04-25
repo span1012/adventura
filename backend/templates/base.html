@@ -1,3 +1,4 @@
+base.html:
 <!doctype html>
 
 <title>{% block title %}{% endblock %} 🎢 Adventura 🎡 </title>
@@ -155,37 +156,29 @@
 
         function answerBoxTemplate(name, location, rating, score, reviews, image_url, website_url) {
             return `
-            <a href="${website_url}" target="_blank" class="result-link">
-                <div class="result-box">
-                <!-- Outer column container -->
-                <div class="park-card-outer">
-
-                    <!-- Top row: heading + meta + image -->
-                    <div class="park-card-top">
-                    <div class="text-meta">
-                        <h3 class='park-name'>${name}</h3>
-                        <p class='park-location'>Location: ${location}</p>
-                        <p class='park-rating'>Rating: ${rating}</p>
-                        <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
-                        <p class='reviews-label'>Recent Reviews:</p>
+                <a href="${website_url}" target="_blank" class="result-link">
+                    <div class="result-box">
+                        <div class="result-content">
+                            <div class="text-content">
+                                <h3 class="park-name">${name}</h3>
+                                <p class="park-location">Location: ${location}</p>
+                                <p class="park-rating">Rating: ${rating}</p>
+                                <p class="park-score">Similarity score: ${score.toFixed(2)}</p>
+                                ${reviews?.length > 0 ? `
+                                    <div class="park-reviews">Recent Reviews:
+                                        <ul>
+                                            ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
+                                        </ul>
+                                    </div>` : ""}
+                            </div>
+                            <div class="image-container">
+                                <img src="${(image_url && image_url !== 'None') ? image_url : 'static/images/default-park.jpg'}" alt="Image of ${name}" class="park-image">
+                            </div>
+                        </div>
                     </div>
-                    <div class="image-container">
-                        <img src="${(image_url && image_url !== 'None') ? image_url : 'static/images/default-park.jpg'}" alt="Image of ${name}" class="park-image">
-                    </div>
-                    </div>
-
-                    <!-- Bottom column: review content -->
-                    ${reviews?.length > 0 ? `
-                    <div class='park-reviews'>
-                    <ul>
-                        ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
-                    </ul>
-                    </div>` : ""}
-
-                </div>
-                </div>
-            </a>`;
-            }
+                </a>
+            `;
+}
 
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
