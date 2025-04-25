@@ -6,7 +6,7 @@ reviews.
 import pandas as pd
 import numpy as np
 import math
-from helpers import park_dict, tokenize, park_token_dict, idf_dict
+from helper_functions import park_dict, tokenize, idf_dict
 from sklearn.decomposition import TruncatedSVD
 
 def unique_tokens(parks):

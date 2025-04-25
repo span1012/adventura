@@ -1,5 +1,5 @@
 """
-Script to perform data processing and auxiliary functions such as tokenization
+Helper file to perform data processing and auxiliary functions such as tokenization
 and cosine similarity calculations.
 """
 
