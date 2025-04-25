@@ -46,6 +46,16 @@
             </div>
 
             <div class="input-container left-align">
+                <label for="travel-distance">How far do you want to travel?</label>
+                <select id="travel-distance">
+                    <option value="local">Local (short drive)</option>
+                    <option value="regional">Regional (day trip)</option>
+                    <option value="long">Long distance (weekend)</option>
+                    <option value="fly">Willing to fly</option>
+                </select>
+            </div>
+
+            <div class="input-container left-align hidden" id="location-container">
                 <label for="location">Preferred Locations (State):</label>
                 <div class="checkbox-group">
                     <!-- ––––––––––––––––––– Version 1: Checking by Individual States ––––––––––––––––––– -->
@@ -86,15 +96,6 @@
                 </select>
             </div>
 
-            <div class="input-container left-align">
-                <label for="travel-distance">How far do you want to travel?</label>
-                <select id="travel-distance">
-                    <option value="local">Local (short drive)</option>
-                    <option value="regional">Regional (day trip)</option>
-                    <option value="long">Long distance (weekend)</option>
-                    <option value="fly">Willing to fly</option>
-                </select>
-            </div>
             <p id="location-error"></p>
 
             <button onclick="filterText()">Find Parks</button>
@@ -123,6 +124,19 @@
                 document.getElementById("location-error").innerText = "Geolocation is not supported by this browser.";
             }
         }
+
+        const travelSelect = document.getElementById('travel-distance');
+        travelSelect.addEventListener('change', () => {
+            const isFlying = travelSelect.value === 'fly';
+
+            const locationContainer = document.getElementById('location-container');
+            locationContainer.classList.toggle('hidden', !isFlying);
+
+            if (!isFlying) {
+                const checkboxes = locationContainer.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = false);
+            }
+        });
 
         function getPosition(pos) {
             latitude = pos.coords.latitude;
