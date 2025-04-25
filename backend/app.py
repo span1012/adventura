@@ -175,6 +175,8 @@ def home():
 @app.route("/parks")
 def episodes_search():
     text = request.args.get("title")
+    if not text:
+        text = ""
     # ––––––––––– Version 1 –––––––––––
     # # apply location filter
     # locations = request.args.get("locations")

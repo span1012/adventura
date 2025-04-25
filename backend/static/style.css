@@ -17,7 +17,7 @@
     justify-content: start;
     align-items: center;
     flex-direction: column;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "DM Sans", sans-serif;
 }
 
 body {
@@ -102,7 +102,7 @@ h4 {
     display: flex;
     align-items: center;
     font-size: 48px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .google-colors h1 {
@@ -111,14 +111,14 @@ h4 {
 }
 
 .input-box {
-    border-radius: 5px;
-    border: 1px solid black;
+    border-radius: 20px;
     background-color: white;
     display: flex;
     align-items: center;
     margin-top: 10px;
     padding: 10px;
     width: 600px;
+    box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.15);
 }
 
 .input-box img {
@@ -147,11 +147,11 @@ h4 {
 }
 
 .episode-title {
-    font-family: 'Kanit', sans-serif;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .episode-desc {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'DM Sans', sans-serif;
 }
 
 /* amanda add */
@@ -298,16 +298,19 @@ textarea {
 
 .result-content {
     display: flex;
+    flex-wrap: wrap; /* Let it stack on smaller screens */
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px;
   }
   
   .text-content {
-    width: 65%;
+    flex: 1 1 65%;
+    min-width: 300px;
   }
   
   .image-container {
-    width: 30%;
+    flex: 0 1 200px;
     display: flex;
     justify-content: center;
   }
@@ -328,7 +331,64 @@ textarea {
     }
 
     .result-link:hover .result-box {
-        background-color: rgba(0, 0, 0, 0.05); /* Light gray overlay when hover */
+        background-color: rgba(0, 0, 0, 0.05);
         transform: scale(1.02);
         cursor: pointer;
     }
+
+    #filter-text-val {
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    #filter-text-val::placeholder {
+        font-family: sans-serif;
+        color: #B5A9A9;
+        font-size: 1rem;
+        font-style: italic;
+    }
+
+    option.drive-option {
+        font-family: 'DM Sans', sans-serif;
+        color: 13697C; 
+        background-color: #f0f8ff;
+    }
+
+    #travel-distance, #kids {
+    color: #003366;
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12); 
+    border-radius: 12px;
+    background-color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #161634; 
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: bolder;
+    font-size: 1rem;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 999px; 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-top: 20px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+#loading-indicator {
+    margin-top: 20px;
+    font-weight: bold;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #333;
+    text-align: center;
+}

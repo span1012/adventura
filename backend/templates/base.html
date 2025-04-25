@@ -41,7 +41,7 @@
                 (Example: "Big rollercoasters and drops" instead of "No small kiddie rides.") </h4>
             <div class="left-align">
                 <div class="input-box" onclick="sendFocus()">
-                    <textarea placeholder="Describe your ideal amusement park experience" id="filter-text-val"
+                    <textarea placeholder="Describe your ideal amusement park experience." id="filter-text-val"
                         oninput="autoResize(this)" rows="1"></textarea>
 
                 </div>
@@ -51,10 +51,10 @@
             <div class="input-container left-align">
                 <label for="travel-distance">How far do you want to travel?</label>
                 <select id="travel-distance">
-                    <option value="local">Local (short drive)</option>
-                    <option value="regional">Regional (day trip)</option>
-                    <option value="long">Long distance (weekend)</option>
-                    <option value="fly">Willing to fly</option>
+                    <option class="drive-option" value="local">Local (short drive)</option>
+                    <option class="drive-option" value="regional">Regional (day trip)</option>
+                    <option class="drive-option" value="long">Long distance (weekend)</option>
+                    <option class="drive-option" value="fly">Willing to fly</option>
                 </select>
             </div>
             <!--
