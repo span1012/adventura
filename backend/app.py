@@ -115,11 +115,18 @@ def json_search(query, locations=None, good_for_kids=None):
     for park, score in park_scores:
         top_reviews = [review['text'] for review in park_dict_filtered[park]['reviews'][:3]]
 
-        new_row = pd.DataFrame({'name': park_dict_filtered[park]['name'],
-                                'location': park_dict_filtered[park]['state'],
-                                'score': score,
-                                'rating': average_park_ratings[park],
-                                'reviews': [top_reviews]}, index=[0])
+        image_url = park_dict_filtered[park].get('image_url')
+        if not image_url or image_url == "None":
+            image_url = "static/images/default-park.jpg"
+
+        new_row = pd.DataFrame({
+            'name': park_dict_filtered[park]['name'],
+            'location': park_dict_filtered[park]['state'],
+            'score': score,
+            'rating': average_park_ratings[park],
+            'reviews': [top_reviews],
+            'image_url': image_url
+        }, index=[0])
         park_df = pd.concat([park_df, new_row])
     # sort the dataframe by score in descending order
     park_df = park_df.sort_values(by='score', ascending=False)

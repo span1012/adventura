@@ -293,3 +293,27 @@ textarea {
 .hidden {
     display: none;
 }
+
+/* recommendation card stuff */
+
+.result-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .text-content {
+    width: 65%;
+  }
+  
+  .image-container {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .park-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
