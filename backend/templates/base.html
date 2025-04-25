@@ -165,14 +165,15 @@ base.html:
                                 <p class="park-rating">Rating: ${rating}</p>
                                 <p class="park-score">Similarity score: ${score.toFixed(2)}</p>
                                 ${reviews?.length > 0 ? `
-                                    <div class="park-reviews">Recent Reviews:
+                                    <div class="park-reviews">
+                                        <p class="reviews-label">Recent Reviews:</p>
                                         <ul>
                                             ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
                                         </ul>
                                     </div>` : ""}
-                            </div>
-                            <div class="image-container">
-                                <img src="${(image_url && image_url !== 'None') ? image_url : 'static/images/default-park.jpg'}" alt="Image of ${name}" class="park-image">
+                                <div class="image-container">
+                                    <img src="${(image_url && image_url !== 'None') ? image_url : 'static/images/default-park.jpg'}" alt="Image of ${name}" class="park-image">
+                                </div>
                             </div>
                         </div>
                     </div>

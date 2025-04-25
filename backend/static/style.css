@@ -298,9 +298,6 @@ textarea {
 
 .result-content {
     display: flex;
-    flex-wrap: wrap; /* Let it stack on smaller screens */
-    justify-content: space-between;
-    align-items: flex-start;
     flex-direction: column;
     gap: 20px;
   }
@@ -311,10 +308,9 @@ textarea {
   }
   
   .image-container {
-    flex: 0 1 200px;
     display: flex;
-    width: 100%;
-    justify-content: flex-end;
+    justify-content: center;
+    margin-top: 15px;
   }
   
   .park-image {
