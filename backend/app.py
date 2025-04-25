@@ -6,8 +6,8 @@ import pandas as pd
 import numpy as np
 import math
 
-import helpers
-from helpers import park_dict, average_park_ratings, park_token_dict, idf_dict
+import helper_functions
+from helper_functions import park_dict, average_park_ratings, park_token_dict, idf_dict
 import svd
 from svd import truncated_mat, park_norms
 
@@ -78,14 +78,14 @@ def json_search(query, locations=None, good_for_kids=None):
     #         query_tokens[token] += 1
     
     # p04 changes
-    park_dict_filtered, park_tokens_filtered = helpers.apply_filters(park_dict,
+    park_dict_filtered, park_tokens_filtered = helper_functions.apply_filters(park_dict,
                                                                      park_token_dict,
                                                                      locations,
                                                                      good_for_kids)
-    all_tokens = helpers.unique_tokens(park_dict_filtered)
+    all_tokens = helper_functions.unique_tokens(park_dict_filtered)
     query_tokens = {token : 0 for token in all_tokens}
 
-    for token in helpers.tokenize(query):
+    for token in helper_functions.tokenize(query):
         if query_tokens.get(token) is not None:
             query_tokens[token] += 1
     

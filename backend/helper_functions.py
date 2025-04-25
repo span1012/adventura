@@ -40,12 +40,12 @@ def apply_filters(parks, park_token_dict, locations=None, good_for_kids=None):
         return {}
     if locations is not None and len(locations) > 0:
         parks = {k: v for (k, v) in parks.items() if v['state'] in locations}
-        park_tokens = {k: v for (k, v) in park_token_dict.items() if parks[k]['state'] in locations}
+        park_topark_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['state'] in locations}
     # filter by good for kids
     if good_for_kids == "yes":
         parks = {k: v for (k, v) in parks.items() if v['good_for_kids'] == "True"}
-        park_tokens = {k: v for (k, v) in park_token_dict.items() if parks[k]['good_for_kids'] == "True"}
-    return parks, park_tokens
+        park_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['good_for_kids'] == "True"}
+    return parks, park_token_dict
 
 def tokenize(text):
     """
@@ -65,6 +65,18 @@ def num_docs(parks) -> int:
     for attributes in parks.values():
         sum += len(attributes['reviews'])
     return sum
+
+def unique_tokens(parks):
+    """
+    Function to return a set of all of the unique terms that appear at least
+    once across all park reviews in the dataset.
+    """
+    all_tokens = set()
+    for attributes in parks.values():
+        for review in attributes['reviews']:
+            all_tokens = all_tokens.union(tokenize(review['text']))
+    all_tokens = sorted(all_tokens)
+    return all_tokens
 
 def get_idf_values(parks, num_docs) -> dict[str, int]:
     """
@@ -190,6 +202,7 @@ def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int
          scores[park] = (dot_product / total_tokens)
      return scores
 
+all_tokens = unique_tokens(park_dict)
 inverted_dict = build_inverted_index(park_dict)
 n_docs = num_docs(park_dict)
 idf_dict = get_idf_values(park_dict, n_docs)

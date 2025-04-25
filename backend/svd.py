@@ -6,20 +6,8 @@ reviews.
 import pandas as pd
 import numpy as np
 import math
-from helper_functions import park_dict, tokenize, idf_dict
+from helper_functions import park_dict, tokenize, all_tokens, idf_dict
 from sklearn.decomposition import TruncatedSVD
-
-def unique_tokens(parks):
-    """
-    Function to return a set of all of the unique terms that appear at least
-    once across all park reviews in the dataset.
-    """
-    all_tokens = set()
-    for attributes in parks.values():
-        for review in attributes['reviews']:
-            all_tokens = all_tokens.union(tokenize(review['text']))
-    all_tokens = sorted(all_tokens)
-    return all_tokens
 
 def get_term_park_matrix(parks, tokens):
     """
@@ -51,7 +39,6 @@ def get_term_park_matrix(parks, tokens):
 #         norm_dict[park] = math.sqrt(sum)
 #     return norm_dict
 
-all_tokens = unique_tokens(park_dict)
 term_park_mat = get_term_park_matrix(park_dict, all_tokens)
 svd = TruncatedSVD(n_components=200, n_iter=20)
 truncated_mat = svd.fit_transform(term_park_mat)
