@@ -100,6 +100,10 @@
 
             <button onclick="filterText()">Find Parks</button>
 
+            <div id="loading-indicator" class="hidden">
+                Finding parks...
+            </div>
+
         </div>
 
         <div id="answer-box"></div>
@@ -200,6 +204,7 @@
 
         function filterText() {
             document.getElementById("answer-box").innerHTML = "";
+            document.getElementById("loading-indicator").classList.remove("hidden");
 
             const query = document.getElementById("filter-text-val").value;
             const locations = getSelectedLocations();
@@ -218,6 +223,8 @@
             fetch("/parks?" + params.toString())
                 .then((response) => response.json())
                 .then((data) => {
+                    document.getElementById("loading-indicator").classList.add("hidden");
+
                     if (data.length === 0) {
                         document.getElementById("answer-box").innerHTML = "<p>No parks found matching your criteria.</p>";
                     } else {
