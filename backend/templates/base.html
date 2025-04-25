@@ -37,9 +37,9 @@
             <h3>Tell us your preferences for an ideal park experience, <br>
                 and we’ll recommend the best amusement parks for you.</h3>
 
+            <h4> Focus on what you want in a park — not what you don't want! <br>
+                (Example: "Big rollercoasters and drops" instead of "No small kiddie rides.") </h4>
             <div class="left-align">
-                <h4> Tell us what you're looking for in a park, not what you don't want! <br>
-                    (ex: "small rides" instead of "no big rollercoasters") </h4>
                 <div class="input-box" onclick="sendFocus()">
                     <textarea placeholder="Describe your ideal amusement park experience" id="filter-text-val"
                         oninput="autoResize(this)" rows="1"></textarea>
@@ -57,12 +57,12 @@
                     <option value="fly">Willing to fly</option>
                 </select>
             </div>
-
-            <div class="input-container left-align hidden" id="location-container">
+            <!--
+             <div class="input-container left-align hidden" id="location-container">
                 <label for="location">Preferred Locations (State):</label>
                 <div class="checkbox-group">
-                    <!-- ––––––––––––––––––– Version 1: Checking by Individual States ––––––––––––––––––– -->
-                    <!-- <label><input type="checkbox" name="location" value="FL"> Florida (FL)</label>
+                    ––––––––––––––––––– Version 1: Checking by Individual States ––––––––––––––––––– 
+                    <label><input type="checkbox" name="location" value="FL"> Florida (FL)</label>
                     <label><input type="checkbox" name="location" value="PA"> Pennsylvania
                         (PA)</label>
                     <label><input type="checkbox" name="location" value="TN"> Tennessee (TN)</label>
@@ -79,7 +79,7 @@
                     <label><input type="checkbox" name="location" value="CA"> California
                         (CA)</label> -->
 
-                    <!-- ––––––––––––––––––– Version 2 ––––––––––––––––––– -->
+                    <!-- ––––––––––––––––––– Version 2 –––––––––––––––––––
                     <label><input type="checkbox" name="location" value="Southeast"> Southeast (FL, TN, MO, LA)</label>
                     <label><input type="checkbox" name="location" value="Northeast"> Northeast (PA, NJ, DE)</label>
                     <label><input type="checkbox" name="location" value="Midwest"> Midwest (IN, IL)</label>
@@ -88,7 +88,7 @@
 
                 </div>
 
-            </div>
+            </div> -->
 
             <div class="input-container left-align">
                 <label for="kids">Are you visiting with kids?</label>
