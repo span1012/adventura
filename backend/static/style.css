@@ -301,6 +301,7 @@ textarea {
     flex-wrap: wrap; /* Let it stack on smaller screens */
     justify-content: space-between;
     align-items: flex-start;
+    flex-direction: column;
     gap: 20px;
   }
   
@@ -312,7 +313,8 @@ textarea {
   .image-container {
     flex: 0 1 200px;
     display: flex;
-    justify-content: center;
+    width: 100%;
+    justify-content: flex-end;
   }
   
   .park-image {
@@ -391,4 +393,55 @@ button:hover {
     font-size: 0.95rem;
     color: #333;
     text-align: center;
+}
+
+/* cards */
+
+.park-card-outer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.park-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.text-meta {
+    flex: 1 1 65%;
+    min-width: 250px;
+}
+
+.image-container {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.park-image {
+    width: 180px;
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.reviews-label {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.park-reviews ul {
+    padding-left: 20px;
+    margin-top: 0;
+}
+
+.park-reviews li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-size: 0.95rem;
 }
