@@ -125,7 +125,8 @@ def json_search(query, locations=None, good_for_kids=None):
             'score': score,
             'rating': average_park_ratings[park],
             'reviews': [top_reviews],
-            'image_url': image_url
+            'image_url': image_url,
+            'website_url': park_dict_filtered[park].get('website_url')
         }, index=[0])
         park_df = pd.concat([park_df, new_row])
     # sort the dataframe by score in descending order

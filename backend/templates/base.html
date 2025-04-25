@@ -153,26 +153,29 @@
             console.log("Accuracy (in m):", pos.coords.accuracy);
         }
 
-        function answerBoxTemplate(name, location, rating, score, reviews, image_url) {
-            return `<div class='result-box'>
-                <div class='result-content'>
-                    <div class='text-content'>
-                        <h3 class='park-name'>${name}</h3>
-                        <p class='park-location'>Location: ${location}</p>
-                        <p class='park-rating'>Rating: ${rating}</p>
-                        <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
-                        ${reviews?.length > 0 ? `
-                            <div class='park-reviews'>Recent Reviews:
-                                <ul>
-                                    ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
-                                </ul>
-                            </div>` : ""}
-                    </div>
-                    <div class='image-container'>
-                        <img src="${(image_url && image_url !== 'None') ? image_url : 'static/images/default-park.jpg'}" alt="Image of ${name}" class="park-image">
+        function answerBoxTemplate(name, location, rating, score, reviews, image_url, website_url) {
+            return `
+            <a href="${website_url}" target="_blank" class="result-link">
+                <div class='result-box'>
+                    <div class='result-content'>
+                        <div class='text-content'>
+                            <h3 class='park-name'>${name}</h3>
+                            <p class='park-location'>Location: ${location}</p>
+                            <p class='park-rating'>Rating: ${rating}</p>
+                            <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
+                            ${reviews?.length > 0 ? `
+                                <div class='park-reviews'>Recent Reviews:
+                                    <ul>
+                                        ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
+                                    </ul>
+                                </div>` : ""}
+                        </div>
+                        <div class='image-container'>
+                            <img src="${(image_url && image_url !== 'None') ? image_url : 'static/images/default-park.jpg'}" alt="Image of ${name}" class="park-image">
+                        </div>
                     </div>
                 </div>
-            </div>`
+            </a>`
         }
 
         function sendFocus() {
@@ -240,7 +243,7 @@
                     } else {
                         data.forEach(row => {
                             let tempDiv = document.createElement("div");
-                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score, row.reviews, row.image_url);
+                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score, row.reviews, row.image_url, row.website_url);
                             document.getElementById("answer-box").appendChild(tempDiv);
                         });
                     }

@@ -317,3 +317,18 @@ textarea {
     height: auto;
     border-radius: 12px;
   }
+
+  .result-link {
+    display: block; /* so the whole card is clickable */
+    text-decoration: none;
+    color: inherit;
+}
+    .result-box {
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .result-link:hover .result-box {
+        background-color: rgba(0, 0, 0, 0.05); /* Light gray overlay when hover */
+        transform: scale(1.02);
+        cursor: pointer;
+    }
