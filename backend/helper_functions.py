@@ -40,13 +40,16 @@ def apply_filters(parks, park_token_dict, locations=None, latitude=None, longitu
     """
     Function to apply location and good for kids filters to the park dictionary.
     """
+    print(f"Length of parks dictionary: {len(parks)}")
+    print(f"Length of park_token_dict: {len(park_token_dict)}")
+
     # filter by location
     if (parks.items() is None):
         print("No parks found")
         return {}
     if locations is not None and len(locations) > 0:
         parks = {k: v for (k, v) in parks.items() if v['state'] in locations}
-        park_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['state'] in locations}
+        # park_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['state'] in locations}
 
     # filter by distance
     if latitude and longitude and distance:
@@ -71,7 +74,9 @@ def apply_filters(parks, park_token_dict, locations=None, latitude=None, longitu
     # filter by good for kids
     if good_for_kids == "yes":
         parks = {k: v for (k, v) in parks.items() if v['good_for_kids'] == "True"}
-        park_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['good_for_kids'] == "True"}
+        # park_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['good_for_kids'] == "True"}
+
+    park_token_dict = {k: v for (k, v) in park_token_dict.items() if k in parks}
     return parks, park_token_dict
 
 def tokenize(text):
