@@ -9,7 +9,7 @@ import math
 import helper_functions
 from helper_functions import park_dict, average_park_ratings, park_token_dict, idf_dict
 import svd
-from svd import truncated_mat, park_norms
+from svd import truncated_mat, park_norms, dimension_tags
 
 # for region location
 region_to_states = {
@@ -119,6 +119,11 @@ def json_search(query, locations=None, good_for_kids=None):
         if not image_url or image_url == "None":
             image_url = "static/images/default-park.jpg"
 
+        park_index = park_reverse_index[park]
+        top_dim_index = np.argmax(truncated_mat[park_index])
+        # TODO: UPDATE PLACEHOLDER
+        tag = "REPLACE"
+
         new_row = pd.DataFrame({
             'name': park_dict_filtered[park]['name'],
             'location': park_dict_filtered[park]['state'],
@@ -126,7 +131,8 @@ def json_search(query, locations=None, good_for_kids=None):
             'rating': average_park_ratings[park],
             'reviews': [top_reviews],
             'image_url': image_url,
-            'website_url': park_dict_filtered[park].get('website_url')
+            'website_url': park_dict_filtered[park].get('website_url'),
+            'tag': tag 
         }, index=[0])
         park_df = pd.concat([park_df, new_row])
     # sort the dataframe by score in descending order

@@ -6,6 +6,9 @@ and cosine similarity calculations.
 import json
 import os
 from nltk import NLTKWordTokenizer, PorterStemmer
+from nltk.corpus import stopwords
+import re
+STOPWORDS = set(stopwords.words("english"))
 
 # Get the directory of the current script
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -50,13 +53,15 @@ def apply_filters(parks, park_token_dict, locations=None, good_for_kids=None):
     return parks, park_token_dict
 
 def tokenize(text):
-    """
-    Function to tokenize the given input string.
-    """
     stemmer = PorterStemmer()
     tokenizer = NLTKWordTokenizer()
     tokens = tokenizer.tokenize(text.lower())
-    return [stemmer.stem(token) for token in tokens]
+
+    # AMANDA ADDED
+    tokens = [re.sub(r'\W+', '', token) for token in tokens] 
+    tokens = [stemmer.stem(token) for token in tokens if token and token not in STOPWORDS]
+    
+    return tokens
 
 def num_docs(parks) -> int:
     """

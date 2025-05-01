@@ -39,7 +39,69 @@ def get_term_park_matrix(parks, tokens):
 #         norm_dict[park] = math.sqrt(sum)
 #     return norm_dict
 
+def get_tfidf_park_matrix(parks, tokens, idf_dict):
+    park_reverse_index = {park: i for i, park in enumerate(parks)}
+    token_reverse_index = {token: i for i, token in enumerate(tokens)}
+    mat = np.zeros((len(parks), len(tokens)))
+
+    for park, attributes in parks.items():
+        row = park_reverse_index[park]
+        token_counts = {}
+        for review in attributes['reviews']:
+            for token in tokenize(review['text']):
+                if token not in idf_dict:
+                    continue
+                token_counts[token] = token_counts.get(token, 0) + 1
+
+        for token, count in token_counts.items():
+            col = token_reverse_index[token]
+            tfidf = count * idf_dict[token]
+            mat[row][col] = tfidf
+
+    return mat
+
 term_park_mat = get_term_park_matrix(park_dict, all_tokens)
-svd = TruncatedSVD(n_components=200, n_iter=20)
+
+# token_freq = np.sum(term_park_mat > 0, axis=0) 
+# doc_freq_threshold = len(park_dict) * 0.6
+# keep_indices = np.where(token_freq < doc_freq_threshold)[0]  
+
+# term_park_mat = term_park_mat[:, keep_indices]  
+# all_tokens = [all_tokens[i] for i in keep_indices]  
+
+svd = TruncatedSVD(n_components=20, n_iter=20)
 truncated_mat = svd.fit_transform(term_park_mat)
 park_norms = np.linalg.norm(truncated_mat, axis=1)
+
+top_n = 10  
+terms = all_tokens  
+
+# for i, component in enumerate(svd.components_):
+#     top_indices = np.argsort(component)[::-1][:top_n]
+#     top_terms = [terms[index] for index in top_indices]
+#     print(f"Dimension {i}: {', '.join(top_terms)}")
+
+dimension_tags = [
+    "Family-friendly",
+    "Thrill rides",
+    "Arcade/Budget-friendly",
+    "Indoor/Water parks",
+    "Nostalgic/Young kids",
+    "Mini golf/Evening fun",
+    "Tickets/Lines",
+    "Games and Food",
+    "Dining Experience",
+    "Small Park Logistics",
+    "Holiday Lights",
+    "Birthday Parties",
+    "Light Shows/Water",
+    "Golf/Family Activities",
+    "Seasonal Return Visits",
+    "Beachside/Repeat Visits",
+    "Crowds/Timing",
+    "Holiday Coaster Parks",
+    "Scenic/Lake Views",
+    "Nature & Outdoors"
+]
+
+__all__ = ["truncated_mat", "park_norms", "dimension_tags"]
