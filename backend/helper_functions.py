@@ -9,6 +9,8 @@ from nltk import NLTKWordTokenizer, PorterStemmer
 from nltk.corpus import stopwords
 from geopy.distance import geodesic
 import re
+import nltk
+nltk.download('stopwords')
 STOPWORDS = set(stopwords.words("english"))
 
 # Get the directory of the current script
