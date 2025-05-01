@@ -26,7 +26,7 @@ CORS(app)
 def calculate_similarities(query_tokens, query_norm, inverted_dict, idf_dict, \
                             park_norms) -> dict[str, int]:
     """
-    Function to create and return a dictionary that maps business ids to 
+    Function to create and return a dictionary that maps business ids to
     the cosine similarity scores between their associated tokenized reviews and
     the input tokenized query.
     """
@@ -47,8 +47,8 @@ def calculate_similarities(query_tokens, query_norm, inverted_dict, idf_dict, \
 
 def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int]:
      """
-     Function to create and return a dictionary that maps amusement park names to 
-     Function to create and return a dictionary that maps business ids to 
+     Function to create and return a dictionary that maps amusement park names to
+     Function to create and return a dictionary that maps business ids to
      the cosine similarity scores between their associated tokenized reviews and
      the input tokenized query.
      """
@@ -57,7 +57,7 @@ def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int
      for park, park_tokens in park_token_dict.items():
          dot_product = 0
          common_tokens = 0     # variable to store number of tokens in common
-                               # between the query and the reviews for this park  
+                               # between the query and the reviews for this park
          for token in query_tokens:
              if park_tokens.get(token) is not None:
                  dot_product += query_tokens.get(token) * idf_dict[token] \
@@ -68,7 +68,7 @@ def find_similar_parks(query_tokens, park_token_dict, idf_dict) -> dict[str, int
      return scores
 
 # Sample search using json with pandas
-def json_search(query, locations=None, good_for_kids=None):
+def json_search(query, locations=None, latitude=None, longitude=None, distance=None, good_for_kids=None):
     # query_tokens = {}
     # for token in tokenize(query):
     #     # token = token.lower()
@@ -76,11 +76,14 @@ def json_search(query, locations=None, good_for_kids=None):
     #         query_tokens[token] = 1
     #     else:
     #         query_tokens[token] += 1
-    
+
     # p04 changes
     park_dict_filtered, park_tokens_filtered = helper_functions.apply_filters(park_dict,
                                                                      park_token_dict,
                                                                      locations,
+                                                                     latitude,
+                                                                     longitude,
+                                                                     distance,
                                                                      good_for_kids)
     all_tokens = helper_functions.unique_tokens(park_dict_filtered)
     query_tokens = {token : 0 for token in all_tokens}
@@ -88,7 +91,7 @@ def json_search(query, locations=None, good_for_kids=None):
     for token in helper_functions.tokenize(query):
         if query_tokens.get(token) is not None:
             query_tokens[token] += 1
-    
+
     updated_query = list(query_tokens.values())
     # # p03 changes
     query_norm = 0
@@ -100,9 +103,9 @@ def json_search(query, locations=None, good_for_kids=None):
     #                                             inverted_dict, idf_dict, park_norms)
     similar_parks = find_similar_parks(query_tokens, park_tokens_filtered, idf_dict)
     park_reverse_index = {park : index for index, park in enumerate(park_dict_filtered)}
-    most_similar_park = max(similar_parks, key=similar_parks.get) 
+    most_similar_park = max(similar_parks, key=similar_parks.get)
     top_park_index = park_reverse_index[most_similar_park]
-    
+
     park_ids = [id for id in park_dict_filtered.keys()]
     inner_products = truncated_mat.dot(truncated_mat[top_park_index,:])
     cosine_sims = inner_products / (park_norms * np.inner(updated_query, updated_query))
@@ -132,7 +135,7 @@ def json_search(query, locations=None, good_for_kids=None):
             'reviews': [top_reviews],
             'image_url': image_url,
             'website_url': park_dict_filtered[park].get('website_url'),
-            'tag': tag 
+            'tag': tag
         }, index=[0])
         park_df = pd.concat([park_df, new_row])
     # sort the dataframe by score in descending order
@@ -142,7 +145,7 @@ def json_search(query, locations=None, good_for_kids=None):
 
 # used for testing
 def main():
-    park_dict_filtered = apply_filters(park_dict, None, None)
+    park_dict_filtered = apply_filters(park_dict, None, None, None, None, None)
     all_tokens = helpers.unique_tokens(park_dict_filtered)
     query = "roller coaster"
     query_tokens = {token : 0 for token in all_tokens}
@@ -150,7 +153,7 @@ def main():
         if query_tokens.get(token) is not None:
             query_tokens[token] += 1
     updated_query = list(query_tokens.values())
-    
+
     inverted_dict = helpers.build_inverted_index(park_dict_filtered)
     n_docs = helpers.num_docs(park_dict_filtered)
     idf_dict = helpers.get_idf_values(park_dict_filtered, n_docs)
@@ -163,7 +166,7 @@ def main():
                                                 inverted_dict, idf_dict, park_norms)
     similarity_scores = find_similar_parks(query_tokens, park_token_dict, idf_dict)
     park_reverse_index = {park : index for index, park in enumerate(park_dict_filtered)}
-    most_similar_park = max(similarity_scores, key=similarity_scores.get) 
+    most_similar_park = max(similarity_scores, key=similarity_scores.get)
     top_park_index = park_reverse_index[most_similar_park]
 
     park_names = [attributes['name'] for attributes in park_dict_filtered.values()]
@@ -202,10 +205,15 @@ def episodes_search():
     else:
         states = None
 
+    # apply geolocation filter (distance)
+    latitude = request.args.get("latitude")
+    longitude = request.args.get("longitude")
+    distance = request.args.get("travel-distance")
+
     # apply good for kids filter
     good_for_kids = request.args.get("good_for_kids")
 
-    return json_search(text, states, good_for_kids)
+    return json_search(text, states, latitude, longitude, distance, good_for_kids)
 
 # if 'DB_NAME' not in os.environ:
 #     app.run(debug=True,host="0.0.0.0",port=5000)

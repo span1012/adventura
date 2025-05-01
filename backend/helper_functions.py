@@ -7,6 +7,7 @@ import json
 import os
 from nltk import NLTKWordTokenizer, PorterStemmer
 from nltk.corpus import stopwords
+from geopy.distance import geodesic
 import re
 STOPWORDS = set(stopwords.words("english"))
 
@@ -35,7 +36,7 @@ with open(json_file_path, 'r') as file:
         else:
             park_dict[entry['business_id']]['good_for_kids'] = "False"
 
-def apply_filters(parks, park_token_dict, locations=None, good_for_kids=None):
+def apply_filters(parks, park_token_dict, locations=None, latitude=None, longitude=None, distance=None, good_for_kids=None):
     """
     Function to apply location and good for kids filters to the park dictionary.
     """
@@ -45,7 +46,28 @@ def apply_filters(parks, park_token_dict, locations=None, good_for_kids=None):
         return {}
     if locations is not None and len(locations) > 0:
         parks = {k: v for (k, v) in parks.items() if v['state'] in locations}
-        park_topark_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['state'] in locations}
+        park_token_dict = {k: v for (k, v) in park_token_dict.items() if parks[k]['state'] in locations}
+
+    # filter by distance
+    if latitude and longitude and distance:
+        f_parks = {}
+        for k, v in parks.items():
+            coord1 = (latitude, longitude)
+            coord2 = (v['latitude'], v['longitude'])
+            calc_dist = geodesic(coord1, coord2).miles
+
+            # print(f"Distance to park {k} (state {v['state']}): {calc_dist} miles")
+            if distance == "local" and calc_dist <= 100:
+                f_parks[k] = v
+            elif distance == "regional" and calc_dist <= 250:
+                f_parks[k] = v
+            elif distance == "long" and calc_dist <= 500:
+                f_parks[k] = v
+            elif distance == "fly":
+                f_parks[k] = v
+
+        parks = f_parks
+
     # filter by good for kids
     if good_for_kids == "yes":
         parks = {k: v for (k, v) in parks.items() if v['good_for_kids'] == "True"}
@@ -58,9 +80,9 @@ def tokenize(text):
     tokens = tokenizer.tokenize(text.lower())
 
     # AMANDA ADDED
-    tokens = [re.sub(r'\W+', '', token) for token in tokens] 
+    tokens = [re.sub(r'\W+', '', token) for token in tokens]
     tokens = [stemmer.stem(token) for token in tokens if token and token not in STOPWORDS]
-    
+
     return tokens
 
 def num_docs(parks) -> int:
