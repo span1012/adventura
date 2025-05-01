@@ -168,7 +168,7 @@ select {
 
 #kids, #travel-distance {
     font-size: 14px;
-    
+
     font-family: "DM Sans", sans-serif;
     width: 100%;
     /* padding-right:20px; */
@@ -189,6 +189,12 @@ select {
     color: #1895B0;
 }
 
+.input-container.left-align label[for="location"] {
+    font-family: "DM Sans", sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: #1895B0;
+}
 .input-container {
     display: flex;
     align-items: flex-start;
@@ -196,7 +202,7 @@ select {
     width: 100%;
     max-width: 600px;
     font-family: "DM Sans", sans-serif;
-    
+
     /* margin: 10px auto; */
 }
 
@@ -291,7 +297,7 @@ textarea {
     font-size: 18px;
 }
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* recommendation card stuff */
@@ -301,18 +307,18 @@ textarea {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .text-content {
     flex: 1 1 65%;
     min-width: 300px;
   }
-  
+
   .image-container {
     display: flex;
     justify-content: center;
     margin-top: 15px;
   }
-  
+
   .park-image {
     max-width: 100%;
     height: auto;
@@ -347,13 +353,13 @@ textarea {
 
     option.drive-option {
         font-family: 'DM Sans', sans-serif;
-        color: 13697C; 
+        color: 13697C;
         background-color: #f0f8ff;
     }
 
     #travel-distance, #kids {
     color: #003366;
-    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12); 
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12);
     border-radius: 12px;
     background-color: white;
     border: none;
@@ -363,14 +369,14 @@ textarea {
 }
 
 button {
-    background-color: #161634; 
+    background-color: #161634;
     color: white;
     font-family: 'DM Sans', sans-serif;
     font-weight: bolder;
     font-size: 1rem;
     padding: 12px 32px;
     border: none;
-    border-radius: 999px; 
+    border-radius: 999px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
