@@ -162,11 +162,11 @@
                     <div class='result-content'>
                         <div class='text-content'>
                             <h3 class='park-name'>${name}</h3>
-                            <p class='park-location'>Location: ${location}</p>
-                            <p class='park-rating'>Average Visitor Rating: ${rating}</p>
-                            <p class='park-tag'>Tags: ${tag1} | ${tag2} | ${tag3}</p>
+                            <p class='park-location'><strong>Location:</strong> ${location}</p>
+                            <p class='park-rating'><strong>Average Visitor Rating:</strong> ${rating}</p>
+                            <p class='park-tag'><strong>Tags:</strong> ${tag1} | ${tag2} | ${tag3}</p>
                             ${reviews?.length > 0 ? `
-                                <div class='park-reviews'>Recent Reviews:
+                                <div class='park-reviews'><strong>Recent Reviews:</strong>
                                     <ul>
                                         ${reviews.slice(0, 2).map(r => `<li>"${r}"</li>`).join('')}
                                     </ul>
