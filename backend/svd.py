@@ -3,10 +3,8 @@ Script to perform singular-value decomposition on dataset of amusement park
 reviews.
 """
 
-import pandas as pd
 import numpy as np
-import math
-from helper_functions import park_dict, tokenize, all_tokens, idf_dict
+from helper_functions import park_dict, tokenize, all_tokens
 from sklearn.decomposition import TruncatedSVD
 
 def get_term_park_matrix(parks, tokens):
@@ -100,6 +98,7 @@ for r in range(len(truncated_mat)):
         d += 1
     park_dict[park_ids[r]]['tags'] = list(tags)
 
+## code to print parks most associated with each dimension
 # truncated_df = pd.DataFrame(truncated_mat)
 # truncated_df["Park Name"] = park_names
 # print(truncated_df)
@@ -109,6 +108,7 @@ for r in range(len(truncated_mat)):
 # for i in range(15):
 #     print(truncated_df[[i, "Park Name"]].sort_values(by = i, ascending=False)[:10])
 
+##  code to print top terms associated with each dimension
 # top_n = 10
 # terms = all_tokens  
 

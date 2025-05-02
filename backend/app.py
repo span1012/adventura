@@ -5,11 +5,9 @@ from regex import S
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 import pandas as pd
 import numpy as np
-import math
 
 import helper_functions
 from helper_functions import average_park_ratings, park_token_dict, idf_dict
-import svd
 from svd import park_dict, truncated_mat, park_norms
 
 # for region location
