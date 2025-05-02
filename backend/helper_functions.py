@@ -30,7 +30,7 @@ with open(json_file_path, 'r') as file:
             'latitude': entry['latitude'],
             'longitude': entry['longitude'],
             'image_url': entry.get('image_url'),
-            'website_url': entry.get('website_url')
+            'website_url': entry.get('website_url'),
         }
         # if good for kids is in attributes, add it to the dictionary
         if entry['attributes'] and 'GoodForKids' in entry['attributes']:

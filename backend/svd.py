@@ -69,39 +69,50 @@ term_park_mat = get_term_park_matrix(park_dict, all_tokens)
 # term_park_mat = term_park_mat[:, keep_indices]  
 # all_tokens = [all_tokens[i] for i in keep_indices]  
 
-svd = TruncatedSVD(n_components=20, n_iter=20)
+svd = TruncatedSVD(n_components=15, n_iter=10)
 truncated_mat = svd.fit_transform(term_park_mat)
 park_norms = np.linalg.norm(truncated_mat, axis=1)
 
-top_n = 10  
-terms = all_tokens  
+park_ids = []
+for park_id, _ in park_dict.items():
+    park_ids.append(park_id)
+
+for r in range(len(truncated_mat)):
+    sorted_dimensions = np.argsort(truncated_mat[r])[::-1]
+    tags = set()
+    d = 0
+    while len(tags) < 3:
+        dimension = sorted_dimensions[d]
+        if dimension in [2, 4]:
+            tags.add("Kid-Friendly")
+        if dimension == 1:
+            tags.add("High Thrill")
+        if dimension in [2, 7, 8, 12]:
+            tags.add("Water Rides")
+        if dimension in [2, 3, 13, 14]:
+            tags.add("Adventure")
+        if dimension in [4, 9, 11, 13]:
+            tags.add("Fantasy")
+        if dimension in [10, 12]:
+            tags.add("Holiday Light Shows")
+        if dimension in [0, 2, 5, 7]:
+            tags.add("Fun For Everyone")
+        d += 1
+    park_dict[park_ids[r]]['tags'] = list(tags)
+
+# truncated_df = pd.DataFrame(truncated_mat)
+# truncated_df["Park Name"] = park_names
+# print(truncated_df)
+# for row in truncated_df.rows():
+#     sorted_row = row.sort_values(ascending=False)
+
+# for i in range(15):
+#     print(truncated_df[[i, "Park Name"]].sort_values(by = i, ascending=False)[:10])
+
+# top_n = 10
+# terms = all_tokens  
 
 # for i, component in enumerate(svd.components_):
 #     top_indices = np.argsort(component)[::-1][:top_n]
 #     top_terms = [terms[index] for index in top_indices]
 #     print(f"Dimension {i}: {', '.join(top_terms)}")
-
-dimension_tags = [
-    "Family-friendly",
-    "Thrill rides",
-    "Arcade/Budget-friendly",
-    "Indoor/Water parks",
-    "Nostalgic/Young kids",
-    "Mini golf/Evening fun",
-    "Tickets/Lines",
-    "Games and Food",
-    "Dining Experience",
-    "Small Park Logistics",
-    "Holiday Lights",
-    "Birthday Parties",
-    "Light Shows/Water",
-    "Golf/Family Activities",
-    "Seasonal Return Visits",
-    "Beachside/Repeat Visits",
-    "Crowds/Timing",
-    "Holiday Coaster Parks",
-    "Scenic/Lake Views",
-    "Nature & Outdoors"
-]
-
-__all__ = ["truncated_mat", "park_norms", "dimension_tags"]

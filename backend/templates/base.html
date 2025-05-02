@@ -155,7 +155,7 @@
             console.log("Accuracy (in m):", pos.coords.accuracy);
         }
 
-        function answerBoxTemplate(name, location, rating, score, reviews, image_url, website_url, tag) {
+        function answerBoxTemplate(name, location, rating, score, reviews, image_url, website_url, tag1, tag2, tag3) {
             return `
             <a href="${website_url}" target="_blank" class="result-link">
                 <div class='result-box'>
@@ -164,8 +164,7 @@
                             <h3 class='park-name'>${name}</h3>
                             <p class='park-location'>Location: ${location}</p>
                             <p class='park-rating'>Rating: ${rating}</p>
-                            <p class='park-score'>Similarity score: ${score.toFixed(2)}</p>
-                            <p class='park-tag'><strong>Category:</strong> ${tag}</p>
+                            <p class='park-tag'>Tags: ${tag1} | ${tag2} | ${tag3}</p>
                             ${reviews?.length > 0 ? `
                                 <div class='park-reviews'>Recent Reviews:
                                     <ul>
@@ -246,7 +245,7 @@
                     } else {
                         data.forEach(row => {
                             let tempDiv = document.createElement("div");
-                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score, row.reviews, row.image_url, row.website_url, row.tag);
+                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.location, row.rating, row.score, row.reviews, row.image_url, row.website_url, row.tag1, row.tag2, row.tag3);
                             document.getElementById("answer-box").appendChild(tempDiv);
                         });
                     }
